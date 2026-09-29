@@ -92,5 +92,27 @@ public static class OrderEndpoints
 
             return Results.Content(html, "text/html; charset=utf-8");
         });
+
+        app.MapGet("/api/orders", async (AppDbContext db, string? status) =>
+        {
+            var query = db.Orders.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(o => o.OrderStatus == status);
+            }
+
+            var orders = await query
+                .OrderByDescending(o => o.OrderCreatedTime)
+                .ToListAsync();
+
+            return Results.Ok(orders);
+        });
+
+        app.MapGet("/api/orders/{id:guid}", async (Guid id, AppDbContext db) =>
+        {
+            var order = await db.Orders.FindAsync(id);
+            return order is not null ? Results.Ok(order) : Results.NotFound();
+        });
     }
 }
