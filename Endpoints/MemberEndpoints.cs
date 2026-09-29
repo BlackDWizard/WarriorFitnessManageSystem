@@ -35,8 +35,8 @@ public static class MemberEndpoints
                 MemberValidUntil = request.MemberValidUntil,
                 MemberStatus = "Active",
                 MemberRemark = request.MemberRemark,
-                MemberCreatedTime = DateTimeOffset.Now,
-                MemberModifiedTime = DateTimeOffset.Now
+                MemberCreatedTime = DateTimeOffset.UtcNow,
+                MemberModifiedTime = DateTimeOffset.UtcNow
             };
 
             db.Members.Add(member);
@@ -73,7 +73,7 @@ public static class MemberEndpoints
             member.MemberPaidAmount = request.MemberPaidAmount;
             member.MemberValidUntil = request.MemberValidUntil;
             member.MemberRemark = request.MemberRemark;
-            member.MemberModifiedTime = DateTimeOffset.Now;
+            member.MemberModifiedTime = DateTimeOffset.UtcNow;
 
             await db.SaveChangesAsync();
 
@@ -90,7 +90,7 @@ public static class MemberEndpoints
             }
 
             member.MemberStatus = "Suspended";
-            member.MemberModifiedTime = DateTimeOffset.Now;
+            member.MemberModifiedTime = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync();
 
             return Results.Ok(member);
