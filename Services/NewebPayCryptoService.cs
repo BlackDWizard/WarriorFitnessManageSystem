@@ -62,11 +62,15 @@ public class NewebPayCryptoService
         aes.Key = Encoding.UTF8.GetBytes(_hashKey);
         aes.IV = Encoding.UTF8.GetBytes(_hashIV);
         aes.Mode = CipherMode.CBC;
-        aes.Padding = PaddingMode.PKCS7;
+        aes.Padding = PaddingMode.None; // 改成 None，自己手動移除補位
 
         using var decryptor = aes.CreateDecryptor();
         var decryptedBytes = decryptor.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
 
-        return Encoding.UTF8.GetString(decryptedBytes);
+        // 手動移除 PKCS7 補位：最後一個 byte 的值，代表要移除的補位長度
+        var paddingLength = decryptedBytes[^1];
+        var unpaddedBytes = decryptedBytes[..^paddingLength];
+
+        return Encoding.UTF8.GetString(unpaddedBytes);
     }
 }

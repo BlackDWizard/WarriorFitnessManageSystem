@@ -20,5 +20,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Member>().ToTable("members");
         modelBuilder.Entity<Order>().ToTable("orders");
         modelBuilder.Entity<PaymentRecord>().ToTable("paymentrecords");
+
+        // 新增這行：明確告訴 EF Core 這個欄位是 jsonb 型別
+        modelBuilder.Entity<PaymentRecord>()
+            .Property(p => p.PaymentRecordGatewayRawPayload)
+            .HasColumnType("jsonb");
     }
 }

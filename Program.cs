@@ -37,5 +37,6 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Hello World!");
 app.MapMemberEndpoints();
 app.MapOrderEndpoints();
+app.MapPaymentEndpoints();
 
 app.Run();

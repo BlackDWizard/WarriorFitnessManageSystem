@@ -65,8 +65,8 @@ public static class OrderEndpoints
                 ["MerchantOrderNo"] = merchantOrderNo,
                 ["Amt"] = ((int)order.OrderAmount).ToString(),
                 ["ItemDesc"] = order.OrderDescription ?? "會員費用",
-                ["ReturnURL"] = "https://4d60-118-166-234-125.ngrok-free.app/api/payments/return",
-                ["NotifyURL"] = "https://4d60-118-166-234-125.ngrok-free.app/api/payments/notify"
+                ["ReturnURL"] = "https://062a-118-166-234-125.ngrok-free.app/api/payments/return",
+                ["NotifyURL"] = "https://062a-118-166-234-125.ngrok-free.app/api/payments/notify"
             };
 
             var tradeInfo = crypto.EncryptTradeInfo(tradeParams);
@@ -90,7 +90,7 @@ public static class OrderEndpoints
                 </html>
                 """;
 
-            return Results.Content(html, "text/html");
+            return Results.Content(html, "text/html; charset=utf-8");
         });
     }
 }
