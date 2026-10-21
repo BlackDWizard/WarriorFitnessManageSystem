@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# Folders
+supabase/
+
 # dotenv files
 .env
 
