@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { apiFetch, clearToken } from './api'
 import type { Member, MemberStatus } from './types'
+import ExpiringMembers from './ExpiringMembers'
 
 const statusLabel: Record<MemberStatus, string> = {
   Active: '有效',
@@ -46,6 +47,7 @@ export default function MemberList({ onLogout }: { onLogout: () => void }) {
   return (
     <div>
       <h2>會員列表</h2>
+      <ExpiringMembers />
       <Link to="/members/new">新增會員</Link>
       <Link to="/charge">現場收款</Link>
       <Link to="/orders">訂單紀錄</Link>

@@ -41,3 +41,11 @@ export type MonthlyReport = {
   totalCount: number
   byType: OrderTypeSummary[]
 }
+
+export type ExpiringMember = {
+  memberID: string
+  memberName: string
+  memberPhoneNo: string | null
+  memberValidUntil: string
+  daysLeft: number
+}

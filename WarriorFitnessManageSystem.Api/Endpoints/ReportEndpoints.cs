@@ -51,6 +51,35 @@ public static class ReportEndpoints
             return Results.Ok(new MonthlyReport(year, month, totalAmount, totalCount, summaries));
         });
 
+        group.MapGet("/expiring-members", async (AppDbContext db, int? days) =>
+        {
+            var range = days ?? 3;
+            if (range < 0 || range > 60)
+            {
+                return Results.BadRequest("天數必須介於 0 到 60");
+            }
+
+            var today = DateOnly.FromDateTime(DateTimeOffset.UtcNow.ToOffset(TaiwanOffset).DateTime);
+            var until = today.AddDays(range);
+
+            var members = await db.Members
+                .Where(m => m.MemberStatus == "Active"
+                        && m.MemberValidUntil != null
+                        && m.MemberValidUntil >= today
+                        && m.MemberValidUntil <= until)
+                .OrderBy(m => m.MemberValidUntil)
+                .ToListAsync();
+
+            var result = members.Select(m => new ExpiringMember(
+                m.MemberID,
+                m.MemberName,
+                m.MemberPhoneNo,
+                m.MemberValidUntil!.Value,
+                m.MemberValidUntil.Value.DayNumber - today.DayNumber));
+
+            return Results.Ok(result);
+        });
+
         return group;
     }
 }
