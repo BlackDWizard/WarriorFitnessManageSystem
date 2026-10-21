@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { setToken } from './api'
+import { API_BASE, setToken } from './api'
+
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
     const [username, setUsername] = useState('')
@@ -10,7 +11,7 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
         e.preventDefault()
         setError('')
 
-        const res = await fetch('/api/auth/login', {
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),

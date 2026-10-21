@@ -1,4 +1,5 @@
 const TOKEN_KEY = 'token'
+export const API_BASE = import.meta.env.VITE_API_BASE_URL ?? ''
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY)
 export const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token)
@@ -6,7 +7,7 @@ export const clearToken = () => localStorage.removeItem(TOKEN_KEY)
 
 export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken()
-  const res = await fetch(path, {
+  const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
