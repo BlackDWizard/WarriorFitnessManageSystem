@@ -10,9 +10,11 @@ namespace WarriorFitnessManageSystem.Api.Endpoints;
 
 public static class OrderEndpoints
 {
-    public static void MapOrderEndpoints(this WebApplication app)
+    public static RouteGroupBuilder MapOrderEndpoints(this WebApplication app)
     {
-        app.MapPost("/api/orders", async (CreateOrderRequest request, AppDbContext db) =>
+        var group = app.MapGroup("/api/orders");
+
+        group.MapPost("", async (CreateOrderRequest request, AppDbContext db) =>
         {
             if (request.OrderAmount <= 0)
             {
@@ -39,7 +41,7 @@ public static class OrderEndpoints
             return Results.Created($"/api/orders/{order.OrderID}", order);
         });
 
-        app.MapGet("/api/orders/{id:guid}/payment-link", async (
+        group.MapGet("/{id:guid}/payment-link", async (
             Guid id,
             AppDbContext db,
             NewebPayCryptoService crypto,
@@ -91,9 +93,10 @@ public static class OrderEndpoints
                 """;
 
             return Results.Content(html, "text/html; charset=utf-8");
-        });
+        })
+        .AllowAnonymous();
 
-        app.MapGet("/api/orders", async (AppDbContext db, string? status) =>
+        group.MapGet("", async (AppDbContext db, string? status) =>
         {
             var query = db.Orders.AsQueryable();
 
@@ -109,10 +112,12 @@ public static class OrderEndpoints
             return Results.Ok(orders);
         });
 
-        app.MapGet("/api/orders/{id:guid}", async (Guid id, AppDbContext db) =>
+        group.MapGet("/{id:guid}", async (Guid id, AppDbContext db) =>
         {
             var order = await db.Orders.FindAsync(id);
             return order is not null ? Results.Ok(order) : Results.NotFound();
         });
+
+        return group;
     }
 }

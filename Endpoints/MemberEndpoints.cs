@@ -7,17 +7,18 @@ namespace WarriorFitnessManageSystem.Api.Endpoints;
 
 public static class MemberEndpoints
 {
-    public static void MapMemberEndpoints(this WebApplication app)
+    public static RouteGroupBuilder MapMemberEndpoints(this WebApplication app)
     {
+        var group = app.MapGroup("/api/members");
         //查詢全部
-        app.MapGet("/api/members", async (AppDbContext db) =>
+        group.MapGet("", async (AppDbContext db) =>
         {
             var members = await db.Members.ToListAsync();
             return Results.Ok(members);
         });
 
         //新增
-        app.MapPost("/api/members", async (CreateMemberRequest request, AppDbContext db) =>
+        group.MapPost("", async (CreateMemberRequest request, AppDbContext db) =>
         {
             if (string.IsNullOrWhiteSpace(request.MemberName))
             {
@@ -46,14 +47,14 @@ public static class MemberEndpoints
         });
 
         //查詢單筆
-        app.MapGet("/api/members/{id:guid}", async (Guid id, AppDbContext db) =>
+        group.MapGet("/{id:guid}", async (Guid id, AppDbContext db) =>
         {
             var member = await db.Members.FindAsync(id);
             return member is not null ? Results.Ok(member) : Results.NotFound();
         });
 
         //更新
-        app.MapPut("/api/members/{id:guid}", async (Guid id, UpdateMemberRequest request, AppDbContext db) =>
+        group.MapPut("/{id:guid}", async (Guid id, UpdateMemberRequest request, AppDbContext db) =>
         {
             var member = await db.Members.FindAsync(id);
             if (member is null)
@@ -81,7 +82,7 @@ public static class MemberEndpoints
         });
 
         //停權
-        app.MapPost("/api/members/{id:guid}/suspend", async (Guid id, AppDbContext db) =>
+        group.MapPost("/{id:guid}/suspend", async (Guid id, AppDbContext db) =>
         {
             var member = await db.Members.FindAsync(id);
             if (member is null)
@@ -97,7 +98,7 @@ public static class MemberEndpoints
         });
 
         //啟用
-        app.MapPost("/api/members/{id:guid}/activate", async (Guid id, AppDbContext db) =>
+        group.MapPost("/{id:guid}/activate", async (Guid id, AppDbContext db) =>
         {
             var member = await db.Members.FindAsync(id);
             if (member is null)
@@ -106,10 +107,12 @@ public static class MemberEndpoints
             }
 
             member.MemberStatus = "Active";
-            member.MemberModifiedTime = DateTimeOffset.Now;
+            member.MemberModifiedTime = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync();
 
             return Results.Ok(member);
         });
+
+        return group;
     }
 }

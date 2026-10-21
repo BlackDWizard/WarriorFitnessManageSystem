@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Member> Members => Set<Member>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<PaymentRecord> PaymentRecords => Set<PaymentRecord>();
+    public DbSet<Admin> Admins => Set<Admin>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,9 +22,12 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Order>().ToTable("orders");
         modelBuilder.Entity<PaymentRecord>().ToTable("paymentrecords");
 
-        // 新增這行：明確告訴 EF Core 這個欄位是 jsonb 型別
+        modelBuilder.Entity<Admin>().ToTable("admins");
+
+        //明確告訴 EF Core 這個欄位是 jsonb 型別
         modelBuilder.Entity<PaymentRecord>()
             .Property(p => p.PaymentRecordGatewayRawPayload)
             .HasColumnType("jsonb");
+
     }
 }
