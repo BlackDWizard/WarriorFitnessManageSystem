@@ -109,7 +109,7 @@ public static class OrderEndpoints
         })
         .AllowAnonymous();
 
-        group.MapGet("", async (AppDbContext db, string? status) =>
+        group.MapGet("", async (AppDbContext db, IOptions<AppOptions> appOptions, string? status) =>
         {
             var query = db.Orders.AsQueryable();
 
@@ -120,15 +120,51 @@ public static class OrderEndpoints
 
             var orders = await query
                 .OrderByDescending(o => o.OrderCreatedTime)
+                .Select(o => new OrderListItem(
+                    o.OrderID,
+                    o.Member != null ? o.Member.MemberName : null,
+                    o.CustomerName,
+                    o.OrderType,
+                    o.OrderDescription,
+                    o.OrderAmount,
+                    o.OrderStatus,
+                    o.OrderPaidTime,
+                    o.OrderCreatedTime,
+                    null))
                 .ToListAsync();
 
-            return Results.Ok(orders);
+            var baseUrl = appOptions.Value.PublicBaseUrl;
+            var result = orders.Select(o => o.OrderStatus == "Pending"
+                ? o with { PaymentUrl = $"{baseUrl}/api/orders/{o.OrderID}/payment-link" }
+                : o);
+
+            return Results.Ok(result);
         });
 
         group.MapGet("/{id:guid}", async (Guid id, AppDbContext db) =>
         {
             var order = await db.Orders.FindAsync(id);
             return order is not null ? Results.Ok(order) : Results.NotFound();
+        });
+
+        group.MapPost("/{id:guid}/cancel", async (Guid id, AppDbContext db) =>
+        {
+            var order = await db.Orders.FindAsync(id);
+            if (order is null)
+            {
+                return Results.NotFound();
+            }
+
+            if (order.OrderStatus != "Pending")
+            {
+                return Results.BadRequest("只有待付款的訂單可以取消");
+            }
+
+            order.OrderStatus = "Cancelled";
+            order.OrderModifiedTime = DateTimeOffset.UtcNow;
+            await db.SaveChangesAsync();
+
+            return Results.NoContent();
         });
 
         return group;

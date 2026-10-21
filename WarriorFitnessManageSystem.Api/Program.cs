@@ -87,6 +87,7 @@ app.MapAuthEndpoints();
 
 app.MapMemberEndpoints().RequireAuthorization();
 app.MapOrderEndpoints().RequireAuthorization();
+app.MapReportEndpoints().RequireAuthorization();
 
 app.MapPaymentEndpoints();
 
