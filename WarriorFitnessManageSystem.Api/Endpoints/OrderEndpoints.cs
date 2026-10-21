@@ -14,11 +14,16 @@ public static class OrderEndpoints
     {
         var group = app.MapGroup("/api/orders");
 
-        group.MapPost("", async (CreateOrderRequest request, AppDbContext db) =>
+        group.MapPost("", async (CreateOrderRequest request, AppDbContext db, IOptions<AppOptions> appOptions) =>
         {
             if (request.OrderAmount <= 0)
             {
                 return Results.BadRequest("訂單金額必須大於 0");
+            }
+
+            if (request.OrderAmount % 1 != 0)
+            {
+                return Results.BadRequest("訂單金額必須是整數");
             }
 
             var order = new Order
@@ -38,14 +43,16 @@ public static class OrderEndpoints
             db.Orders.Add(order);
             await db.SaveChangesAsync();
 
-            return Results.Created($"/api/orders/{order.OrderID}", order);
+            var paymentUrl = $"{appOptions.Value.PublicBaseUrl}/api/orders/{order.OrderID}/payment-link";
+            return Results.Created($"/api/orders/{order.OrderID}", new { order, paymentUrl });
         });
 
         group.MapGet("/{id:guid}/payment-link", async (
             Guid id,
             AppDbContext db,
             NewebPayCryptoService crypto,
-            IOptions<NewebPayOptions> newebPayOptions) =>
+            IOptions<NewebPayOptions> newebPayOptions,
+            IOptions<AppOptions> appOptions) =>
         {
             var order = await db.Orders.FindAsync(id);
             if (order is null)
@@ -53,7 +60,13 @@ public static class OrderEndpoints
                 return Results.NotFound();
             }
 
+            if (order.OrderStatus != "Pending")
+            {
+                return Results.Content("<p>此訂單已付款或已失效，請向櫃檯確認。</p>", "text/html; charset=utf-8");
+            }
+
             var options = newebPayOptions.Value;
+            var baseUrl = appOptions.Value.PublicBaseUrl;
 
             // 商店訂單編號：藍新規定要唯一，用時間戳+訂單ID前8碼組合
             var merchantOrderNo = $"{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}{order.OrderID:N}"[..30];
@@ -67,8 +80,8 @@ public static class OrderEndpoints
                 ["MerchantOrderNo"] = merchantOrderNo,
                 ["Amt"] = ((int)order.OrderAmount).ToString(),
                 ["ItemDesc"] = order.OrderDescription ?? "會員費用",
-                ["ReturnURL"] = "https://062a-118-166-234-125.ngrok-free.app/api/payments/return",
-                ["NotifyURL"] = "https://062a-118-166-234-125.ngrok-free.app/api/payments/notify"
+                ["ReturnURL"] = $"{baseUrl}/api/payments/return",
+                ["NotifyURL"] = $"{baseUrl}/api/payments/notify"
             };
 
             var tradeInfo = crypto.EncryptTradeInfo(tradeParams);

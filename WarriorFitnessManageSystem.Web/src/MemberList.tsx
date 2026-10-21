@@ -47,6 +47,7 @@ export default function MemberList({ onLogout }: { onLogout: () => void }) {
     <div>
       <h2>會員列表</h2>
       <Link to="/members/new">新增會員</Link>
+      <Link to="/charge">現場收款</Link>
       <button onClick={handleLogout}>登出</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -64,6 +65,7 @@ export default function MemberList({ onLogout }: { onLogout: () => void }) {
               <td>{statusLabel[m.memberStatus]}</td>
               <td>
                 <Link to={`/members/${m.memberID}/edit`}>編輯</Link>
+                <Link to={`/charge?memberId=${m.memberID}&name=${encodeURIComponent(m.memberName)}`}>收款</Link>
                 <button onClick={() => toggleStatus(m)}>
                   {m.memberStatus === 'Suspended' ? '恢復' : '停權'}
                 </button>

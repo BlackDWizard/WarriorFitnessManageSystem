@@ -24,6 +24,7 @@ builder.Services.AddScoped(sp =>
     var options = sp.GetRequiredService<IOptions<NewebPayOptions>>().Value;
     return new NewebPayCryptoService(options.HashKey, options.HashIV);
 });
+builder.Services.Configure<AppOptions>(builder.Configuration.GetSection("App"));
 
 //Auth 設定
 builder.Services.Configure<AuthOptions>(
