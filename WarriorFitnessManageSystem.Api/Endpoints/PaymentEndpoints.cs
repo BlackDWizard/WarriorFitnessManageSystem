@@ -12,55 +12,44 @@ public static class PaymentEndpoints
     {
         // 背景通知（藍新伺服器直接呼叫，唯一可信的付款結果來源）
         app.MapPost("/api/payments/notify", async (
-    HttpRequest request,
-    AppDbContext db,
-    NewebPayCryptoService crypto,
-    ILogger<Program> logger) =>
+            HttpRequest request,
+            AppDbContext db,
+            NewebPayCryptoService crypto,
+            ILogger<Program> logger) =>
         {
             var form = await request.ReadFormAsync();
             var tradeInfo = form["TradeInfo"].ToString();
             var tradeSha = form["TradeSha"].ToString();
 
-            logger.LogInformation("[Notify] TradeInfo 長度: {Length}", tradeInfo.Length);
-            logger.LogInformation("[Notify] TradeInfo 前20碼: {Prefix}", tradeInfo[..Math.Min(20, tradeInfo.Length)]);
-            logger.LogInformation("[Notify] TradeSha: {TradeSha}", tradeSha);
-
             if (string.IsNullOrEmpty(tradeInfo) || string.IsNullOrEmpty(tradeSha))
             {
-                logger.LogWarning("[Notify] TradeInfo 或 TradeSha 是空的！");
-                return Results.BadRequest("缺少必要參數");
+                logger.LogWarning("藍新通知缺少 TradeInfo 或 TradeSha");
+                return Results.BadRequest();
             }
 
             var expectedSha = crypto.GenerateTradeSha(tradeInfo);
-            logger.LogInformation("[Notify] 我方算出的 Sha: {ExpectedSha}", expectedSha);
-            logger.LogInformation("[Notify] 簽章是否相符: {IsMatch}",
-                string.Equals(expectedSha, tradeSha, StringComparison.OrdinalIgnoreCase));
-
             if (!string.Equals(expectedSha, tradeSha, StringComparison.OrdinalIgnoreCase))
             {
-                return Results.BadRequest("簽章驗證失敗");
+                logger.LogWarning("藍新通知簽章驗證失敗");
+                return Results.BadRequest();
             }
 
             var decryptedJson = crypto.DecryptTradeInfo(tradeInfo);
-
             using var doc = JsonDocument.Parse(decryptedJson);
             var root = doc.RootElement;
             var status = root.GetProperty("Status").GetString();
             var result = root.GetProperty("Result");
             var merchantOrderNo = result.GetProperty("MerchantOrderNo").GetString();
 
-            // 用之前存的 OrderGatewayTradeNo 找回對應的訂單
-            var order = await db.Orders
-                .FirstOrDefaultAsync(o => o.OrderGatewayTradeNo == merchantOrderNo);
-
+            var order = await db.Orders.FirstOrDefaultAsync(o => o.OrderGatewayTradeNo == merchantOrderNo);
             if (order is null)
             {
-                // 收到通知但找不到對應訂單，記錄下來但不報錯（避免藍新一直重試）
+                logger.LogWarning("找不到對應訂單，MerchantOrderNo: {MerchantOrderNo}", merchantOrderNo);
                 return Results.Ok();
             }
 
-            // 不論成功失敗，都把原始通知內容存進 payment_records 做為稽核紀錄
-            var paymentRecord = new PaymentRecord
+            // 不論結果都留下原始紀錄，供日後對帳
+            db.PaymentRecords.Add(new PaymentRecord
             {
                 PaymentRecordID = Guid.NewGuid(),
                 OrderID = order.OrderID,
@@ -68,22 +57,36 @@ public static class PaymentEndpoints
                 PaymentRecordReceivedTime = DateTimeOffset.UtcNow,
                 PaymentRecordCreatedTime = DateTimeOffset.UtcNow,
                 PaymentRecordModifiedTime = DateTimeOffset.UtcNow
-            };
-            db.PaymentRecords.Add(paymentRecord);
+            });
 
-            if (status == "SUCCESS")
+            if (order.OrderStatus == "Paid")
             {
-                order.OrderStatus = "Paid";
-                order.OrderPaidTime = DateTimeOffset.UtcNow;
+                logger.LogInformation("訂單 {OrderID} 已付款，忽略重複通知", order.OrderID);
+            }
+            else if (status == "SUCCESS")
+            {
+                var paidAmount = result.GetProperty("Amt").GetInt32();
+                
+                if (paidAmount != (int)order.OrderAmount)
+                {
+                    logger.LogError("付款金額不符，訂單 {OrderID} 應付 {Expected}，實付 {Actual}",
+                        order.OrderID, order.OrderAmount, paidAmount);
+                    order.OrderStatus = "Failed";
+                }
+                else
+                {
+                    order.OrderStatus = "Paid";
+                    order.OrderPaidTime = DateTimeOffset.UtcNow;
+                }
+                order.OrderModifiedTime = DateTimeOffset.UtcNow;
             }
             else
             {
                 order.OrderStatus = "Failed";
+                order.OrderModifiedTime = DateTimeOffset.UtcNow;
             }
-            order.OrderModifiedTime = DateTimeOffset.UtcNow;
 
             await db.SaveChangesAsync();
-
             return Results.Ok();
         });
 
