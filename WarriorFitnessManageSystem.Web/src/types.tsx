@@ -26,3 +26,18 @@ export type OrderListItem = {
   orderCreatedTime: string
   paymentUrl: string | null
 }
+
+export type OrderTypeSummary = {
+  orderType: OrderType
+  count: number
+  amount: number
+  percentage: number
+}
+
+export type MonthlyReport = {
+  year: number
+  month: number
+  totalAmount: number
+  totalCount: number
+  byType: OrderTypeSummary[]
+}

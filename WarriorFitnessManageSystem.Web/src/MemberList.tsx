@@ -49,6 +49,7 @@ export default function MemberList({ onLogout }: { onLogout: () => void }) {
       <Link to="/members/new">新增會員</Link>
       <Link to="/charge">現場收款</Link>
       <Link to="/orders">訂單紀錄</Link>
+      <Link to="/reports">報表</Link>
       <button onClick={handleLogout}>登出</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
