@@ -1,17 +1,20 @@
 import { Link } from 'react-router';
 import { Seo } from '../components/Seo';
 import styles from './HomePage.module.css';
+import Carousel from '../components/Carousel';
+import { useSiteImages } from '../hooks/useSiteImages';
 
 // 文案都是暫定的，請換成健身房自己的話
 export default function HomePage() {
+  const banners = useSiteImages('Banner');
   return (
     <>
       <Seo />
 
-      {/* Day 3 換成活動圖片輪播。比例固定 16:9，請健身房用 1920×1080 製作活動圖 */}
-      <section className={styles.banner} aria-label="最新活動">
-        <p className={styles.bannerPlaceholder}>活動圖片輪播</p>
-      </section>
+      {/* 載入中先放一個同樣比例的灰色區塊佔位，圖片出來時版面不會往下跳 */}
+      {banners.status === 'loading' && <div className={styles.bannerSkeleton} aria-hidden="true" />}
+      {/* 沒有活動圖或載入失敗時整塊不顯示，直接從介紹區開始 */}
+      {banners.status === 'ready' && <Carousel images={banners.images} label="最新活動" />}
 
       <section className={styles.intro}>
         <div className={styles.introInner}>

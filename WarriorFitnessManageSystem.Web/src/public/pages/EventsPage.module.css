@@ -1,0 +1,19 @@
+.list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 24px;
+}
+
+.link {
+  display: block;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--wf-mist);
+}

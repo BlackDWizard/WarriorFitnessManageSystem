@@ -76,7 +76,9 @@ app.MapMemberEndpoints().RequireAuthorization();
 app.MapOrderEndpoints().RequireAuthorization();
 app.MapReportEndpoints().RequireAuthorization();
 app.MapUploadEndpoints().RequireAuthorization();
+app.MapSiteImageEndpoints().RequireAuthorization();
 
 app.MapPaymentEndpoints();
+app.MapPublicSiteImageEndpoints();
 
 app.Run();

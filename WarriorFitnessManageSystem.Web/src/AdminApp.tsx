@@ -10,7 +10,7 @@ import MemberForm from './MemberForm'
 import ChargeForm from './ChargeForm'
 import OrderList from './OrderList'
 import ReportPage from './ReportPage'
-import UploadTestPage from './UploadTestPage'
+import SiteImageManagerPage from './SiteImageManagerPage'
 
 export default function AdminApp() {
   const session = useSession()
@@ -47,7 +47,7 @@ export default function AdminApp() {
             <Route path="charge" element={<ChargeForm />} />
             <Route path="orders" element={<OrderList />} />
             <Route path="reports" element={<ReportPage />} />
-            <Route path="upload-test" element={<UploadTestPage />} />
+            <Route path="content/:slug" element={<SiteImageManagerPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

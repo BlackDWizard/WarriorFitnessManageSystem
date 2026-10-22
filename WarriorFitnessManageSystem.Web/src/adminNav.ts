@@ -1,3 +1,5 @@
+import { siteImageCategories } from './siteImageCategories'
+
 export type AdminNavItem = {
   to: string
   label: string
@@ -21,6 +23,11 @@ export const adminNav: AdminNavGroup[] = [
     ],
   },
   // Day 3 起在這裡加上「網站內容」群組：活動圖片、課程費用、教練師資……
+  {
+    title: '網站內容',
+    // 四種網站圖片的選單直接從分類設定產生，新增分類時選單會自動多一項
+    items: siteImageCategories.map(c => ({ to: `/content/${c.slug}`, label: c.title })),
+  },
 ]
 
 export function isNavItemActive(item: AdminNavItem, pathname: string) {

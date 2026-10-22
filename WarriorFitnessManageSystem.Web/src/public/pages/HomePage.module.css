@@ -1,24 +1,17 @@
-/* 輪播的位置先用地板警示線的斜紋佔位 */
-.banner {
+/* 輪播載入中的佔位：跟輪播一樣是 16:9，輕微的明暗變化表示正在載入 */
+.bannerSkeleton {
   max-width: 1440px;
   margin: 0 auto;
   aspect-ratio: 16 / 9;
-  display: grid;
-  place-items: center;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--wf-plate) 0 28px,
-    var(--wf-steel) 28px 56px
-  );
+  background: var(--wf-mist);
+  animation: pulse 1.4s ease-in-out infinite;
 }
 
-.bannerPlaceholder {
-  margin: 0;
-  padding: 8px 16px;
-  background: var(--wf-chalk);
-  font-weight: 700;
+@keyframes pulse {
+  50% {
+    opacity: 0.55;
+  }
 }
-
 .intro {
   border-bottom: 1px solid var(--wf-line);
 }

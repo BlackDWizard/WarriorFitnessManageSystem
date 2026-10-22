@@ -1,6 +1,7 @@
 export type MemberStatus = 'Active' | 'Expired' | 'Suspended'
 export type OrderStatus = 'Pending' | 'Paid' | 'Failed' | 'Cancelled'
 export type OrderType = 'MembershipRenew' | 'Walkin' | 'Other'
+export type SiteImageCategory = 'Banner' | 'Pricing' | 'Testimonial' | 'Gallery'
 
 export type Member = {
   memberID: string
@@ -59,4 +60,15 @@ export type SessionInfo = {
 export type UploadedImage = {
   path: string
   url: string
+}
+
+export type SiteImageItem = {
+  id: string
+  category: SiteImageCategory
+  storagePath: string
+  url: string
+  altText: string
+  linkUrl: string | null
+  sortOrder: number
+  isVisible: boolean
 }

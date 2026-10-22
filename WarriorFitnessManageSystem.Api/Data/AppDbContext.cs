@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<PaymentRecord> PaymentRecords => Set<PaymentRecord>();
     public DbSet<Admin> Admins => Set<Admin>();
     public DbSet<AdminSession> AdminSessions => Set<AdminSession>();
+    public DbSet<SiteImage> SiteImages => Set<SiteImage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,5 +39,6 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(s => s.AdminID);
 
+        modelBuilder.Entity<SiteImage>().ToTable("siteimages");
     }
 }
