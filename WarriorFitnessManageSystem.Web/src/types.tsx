@@ -55,3 +55,8 @@ export type SessionInfo = {
   displayName: string
   expiresInSeconds: number
 }
+
+export type UploadedImage = {
+  path: string
+  url: string
+}

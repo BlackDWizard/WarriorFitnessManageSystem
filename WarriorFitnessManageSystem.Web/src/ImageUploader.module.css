@@ -1,0 +1,46 @@
+.uploader {
+    display: grid;
+    gap: 12px;
+    max-width: 480px;
+}
+
+.preview {
+    position: relative;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: var(--a-hover);
+    border: 1px dashed var(--a-line);
+    border-radius: var(--a-radius);
+}
+
+.image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.placeholder {
+    color: var(--a-muted);
+    font-size: 0.875rem;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.status {
+    font-size: 0.875rem;
+    color: var(--a-muted);
+}
+
+.statusError {
+    color: var(--a-danger);
+}

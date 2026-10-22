@@ -36,6 +36,9 @@ builder.Services.AddAuthentication(SessionAuthenticationHandler.SchemeName)
         SessionAuthenticationHandler.SchemeName, null);
 builder.Services.AddAuthorization();
 
+//Supabase Storage（圖片上傳）
+builder.Services.AddSupabaseStorage(builder.Configuration);
+
 //Swagger：在 Swagger 裡呼叫 /api/auth/login 後，瀏覽器會自動帶 cookie，不用再貼 token
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -72,6 +75,7 @@ app.MapAuthEndpoints();
 app.MapMemberEndpoints().RequireAuthorization();
 app.MapOrderEndpoints().RequireAuthorization();
 app.MapReportEndpoints().RequireAuthorization();
+app.MapUploadEndpoints().RequireAuthorization();
 
 app.MapPaymentEndpoints();
 

@@ -7,8 +7,10 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
     ...options,
     // 跨網域（admin. → api.）也要帶上 cookie；token 不再由程式手動放進 header
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
+    // 上傳檔案時 body 是 FormData：不能自己指定 Content-Type，
+    // 要讓瀏覽器自動填入 multipart/form-data 和分隔字串（boundary）
+    headers: options.body instanceof FormData ? {} : {
+      'Content-Type': 'application/json'
     },
   })
 
