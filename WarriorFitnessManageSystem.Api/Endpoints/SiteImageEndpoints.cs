@@ -94,6 +94,46 @@ public static class SiteImageEndpoints
             return Results.Ok(ToItem(image, storage));
         });
 
+        //調整順序：前端送來「排好順序的整個 id 清單」，依清單位置重新編號
+        group.MapPut("/reorder", async (ReorderSiteImagesRequest request, AppDbContext db) =>
+        {
+            if (!SiteImageRules.IsValidCategory(request.Category))
+            {
+                return Results.BadRequest("圖片分類不正確");
+            }
+
+            var images = await db.SiteImages
+                .Where(s => s.SiteImageCategory == request.Category)
+                .ToListAsync();
+
+            // 清單必須剛好是這個分類的全部圖片：不能多、不能少、不能重複
+            // 例如另一個人剛新增或刪除了圖片，這邊的畫面就是舊的，這時拒絕比亂排好
+            var requestedIds = request.Ids ?? [];
+            var sameSet = requestedIds.Count == images.Count
+                && requestedIds.Distinct().Count() == requestedIds.Count
+                && images.All(image => requestedIds.Contains(image.SiteImageID));
+            if (!sameSet)
+            {
+                return Results.Conflict("圖片清單已經有變動，請重新整理頁面後再調整順序");
+            }
+
+            var now = DateTimeOffset.UtcNow;
+            var byId = images.ToDictionary(image => image.SiteImageID);
+            for (var i = 0; i < requestedIds.Count; i++)
+            {
+                var image = byId[requestedIds[i]];
+                if (image.SiteImageSortOrder != i + 1)
+                {
+                    image.SiteImageSortOrder = i + 1;
+                    image.SiteImageModifiedTime = now;
+                }
+            }
+
+            // 一次 SaveChanges 就是一個交易：全部更新成功，或全部不更新
+            await db.SaveChangesAsync();
+            return Results.NoContent();
+        });
+
         //刪除：先刪資料，再刪檔案
         group.MapDelete("/{id:guid}", async (Guid id, AppDbContext db, SupabaseStorageService storage, ILogger<SupabaseStorageService> logger) =>
         {
@@ -139,8 +179,8 @@ public static class SiteImageEndpoints
                 .OrderBy(s => s.SiteImageSortOrder)
                 .ToListAsync();
 
-            // 讓瀏覽器快取 60 秒：訪客在頁面間切換不用每次重抓；後台改完最多一分鐘前台就會更新
-            http.Response.Headers.CacheControl = "public, max-age=60";
+            // 每次都向伺服器確認最新資料：教練在後台改完，前台重新整理就看得到
+            http.Response.Headers.CacheControl = "no-cache";
 
             return Results.Ok(images.Select(s => new PublicSiteImage(
                 s.SiteImageID,

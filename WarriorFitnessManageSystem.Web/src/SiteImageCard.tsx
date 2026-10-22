@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { SiteImageCategoryConfig } from './siteImageCategories'
 import { updateSiteImage } from './siteImages'
 import type { SiteImageItem } from './types'
@@ -9,9 +9,11 @@ type Props = {
   config: SiteImageCategoryConfig
   onSaved: (updated: SiteImageItem) => void
   onDelete: (image: SiteImageItem) => void
+  // 拖曳把手由外面傳進來，卡片只負責放在縮圖的角落
+  dragHandle?: ReactNode
 }
 
-export default function SiteImageCard({ image, config, onSaved, onDelete }: Props) {
+export default function SiteImageCard({ image, config, onSaved, onDelete, dragHandle }: Props) {
   // 編輯中的值先存在卡片自己的 state，按「儲存」才送出
   const [altText, setAltText] = useState(image.altText)
   const [linkUrl, setLinkUrl] = useState(image.linkUrl ?? '')
@@ -50,6 +52,7 @@ export default function SiteImageCard({ image, config, onSaved, onDelete }: Prop
       >
         <img src={image.url} alt={image.altText || '未填寫替代文字'} loading="lazy" className={styles.thumbImage} />
         {!image.isVisible && <span className={`badge badge-muted ${styles.hiddenBadge}`}>前台未顯示</span>}
+        {dragHandle}
       </div>
 
       <div className={styles.cardBody}>

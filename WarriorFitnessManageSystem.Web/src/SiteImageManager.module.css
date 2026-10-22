@@ -9,10 +9,6 @@
   font-size: 1rem;
 }
 
-section + .sectionTitle {
-  margin-top: 28px;
-}
-
 /* 卡片自動排列：每張至少 260px，放得下幾欄就排幾欄 */
 .grid {
   margin: 0;
@@ -77,4 +73,62 @@ section + .sectionTitle {
   width: 18px;
   height: 18px;
   margin: 0;
+}
+
+/* ---------- 拖曳排序 ---------- */
+
+.listHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-top: 28px;
+}
+
+.listHeader .sectionTitle {
+  margin-top: 0;
+}
+
+.orderStatus {
+  font-size: 0.85rem;
+  color: var(--a-muted);
+}
+
+.sortableItem {
+  position: relative;
+}
+
+/* 拖曳中的那張浮在其他卡片上面，加上陰影看起來像被拿起來 */
+.dragging {
+  z-index: 10;
+}
+
+.dragging :global(.card) {
+  box-shadow: 0 12px 28px rgba(31, 41, 51, 0.25);
+}
+
+/* touch-action: none：手指按在把手上移動時是拖曳，不是捲動頁面 */
+.dragHandle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 44px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--a-ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
 }

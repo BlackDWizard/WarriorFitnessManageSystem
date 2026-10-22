@@ -6,6 +6,10 @@
 # Folders
 supabase/
 
+# Files
+commands.txt
+target.txt
+
 # dotenv files
 .env
 

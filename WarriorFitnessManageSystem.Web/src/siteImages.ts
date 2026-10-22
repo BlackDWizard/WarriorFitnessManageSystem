@@ -29,3 +29,11 @@ export function updateSiteImage(id: string, changes: SiteImageChanges) {
 export function deleteSiteImage(id: string) {
   return apiFetch<void>(`/api/site-images/${id}`, { method: 'DELETE' })
 }
+
+// 送出排好順序的完整 id 清單，後端依位置重新編號
+export function reorderSiteImages(category: SiteImageCategory, ids: string[]) {
+  return apiFetch<void>('/api/site-images/reorder', {
+    method: 'PUT',
+    body: JSON.stringify({ category, ids }),
+  })
+}

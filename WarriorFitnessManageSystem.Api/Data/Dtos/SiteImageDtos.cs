@@ -5,6 +5,8 @@ public record CreateSiteImageRequest(string Category, string StoragePath, string
 
 public record UpdateSiteImageRequest(string? AltText, string? LinkUrl, bool IsVisible);
 
+public record ReorderSiteImagesRequest(string Category, List<Guid>? Ids);
+
 // 後台用：包含所有欄位
 public record SiteImageItem(
     Guid Id,
