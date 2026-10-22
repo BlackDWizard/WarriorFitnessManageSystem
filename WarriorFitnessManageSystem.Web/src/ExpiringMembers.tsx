@@ -14,9 +14,9 @@ export default function ExpiringMembers() {
   if (members.length === 0) return null
 
   return (
-    <div style={{ border: '1px solid #f0ad4e', background: '#fff8e5', padding: '0.5rem 1rem', margin: '1rem 0' }}>
-      <strong>3 天內到期（{members.length} 位）</strong>
-      <ul>
+    <section className="alert alert-warning" aria-labelledby="expiring-heading">
+      <strong id="expiring-heading">3 天內到期（{members.length} 位）</strong>
+      <ul className="alert-list">
         {members.map(m => (
           <li key={m.memberID}>
             {m.memberName}　{m.memberPhoneNo ?? '無電話'}　{m.memberValidUntil}
@@ -24,6 +24,6 @@ export default function ExpiringMembers() {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }

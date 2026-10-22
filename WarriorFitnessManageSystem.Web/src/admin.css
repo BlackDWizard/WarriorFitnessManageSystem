@@ -1,0 +1,403 @@
+/* 後台共用樣式：顏色、頁面標題、卡片、按鈕、表單、表格、標籤、提示訊息。只在後台載入 */
+:root {
+  --a-bg: #F3F4F1;
+  --a-surface: #FFFFFF;
+  --a-ink: #1F2933;
+  --a-muted: #5B6670;
+  --a-line: #D9DDD6;
+  --a-hover: #F0F2EE;
+  --a-accent: #E8B420;
+  --a-danger: #B42318;
+  --a-danger-bg: #FDECEA;
+  --a-success: #1E7B4A;
+  --a-success-bg: #E6F4EC;
+  --a-warning: #8A5A00;
+  --a-warning-bg: #FFF4D6;
+  --a-radius: 6px;
+  --a-display: 'Barlow Condensed', 'Noto Sans TC', sans-serif;
+  --a-body: 'Noto Sans TC', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--a-bg);
+  color: var(--a-ink);
+  font-family: var(--a-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--a-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--a-ink);
+  outline-offset: 2px;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---------- 頁面標題列：左邊標題，右邊主要動作 ---------- */
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+/* ---------- 卡片 ---------- */
+
+.card {
+  background: var(--a-surface);
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+  padding: 20px;
+}
+
+/* ---------- 按鈕：<button> 和 <Link> 都可以套用 ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+  background: var(--a-surface);
+  color: var(--a-ink);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--a-hover);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--a-ink);
+  border-color: var(--a-ink);
+  color: #FFFFFF;
+}
+
+.btn-primary:hover {
+  background: #334150;
+}
+
+.btn-danger {
+  border-color: #F1B8B2;
+  color: var(--a-danger);
+}
+
+.btn-danger:hover {
+  background: var(--a-danger-bg);
+}
+
+.btn-sm {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 0.875rem;
+}
+
+.btn-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---------- 表單 ---------- */
+
+.form {
+  display: grid;
+  gap: 16px;
+  max-width: 560px;
+}
+
+.form .alert {
+  margin: 0;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.required {
+  margin-left: 2px;
+  color: var(--a-danger);
+}
+
+/* 兩個欄位並排，手機上自動變成上下排列 */
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+  background: var(--a-surface);
+}
+
+.field textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--a-ink);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 篩選條件列：放在表格上方 */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.toolbar .field {
+  min-width: 160px;
+}
+
+/* ---------- 表格：外層 .table-wrap 讓寬表格在手機上可以左右捲動 ---------- */
+
+.table-wrap {
+  overflow-x: auto;
+  background: var(--a-surface);
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.925rem;
+}
+
+.table th,
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--a-line);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th {
+  background: #F7F8F5;
+  color: var(--a-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr:hover {
+  background: var(--a-hover);
+}
+
+/* 金額、筆數靠右對齊，數字等寬，上下比較時位數會對齊 */
+.table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 表格裡的按鈕排成一列，不要換行把整列撐高 */
+.table .btn-group {
+  flex-wrap: nowrap;
+}
+
+/* 說明這類長文字允許換行 */
+.table .wrap {
+  min-width: 160px;
+  white-space: normal;
+}
+
+/* ---------- 狀態標籤 ---------- */
+
+.badge {
+  display: inline-block;
+  padding: 1px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-success {
+  background: var(--a-success-bg);
+  color: var(--a-success);
+}
+
+.badge-warning {
+  background: var(--a-warning-bg);
+  color: var(--a-warning);
+}
+
+.badge-danger {
+  background: var(--a-danger-bg);
+  color: var(--a-danger);
+}
+
+.badge-muted {
+  background: var(--a-hover);
+  color: var(--a-muted);
+}
+
+/* ---------- 提示訊息 ---------- */
+
+.alert {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid;
+  border-radius: var(--a-radius);
+}
+
+.alert-error {
+  background: var(--a-danger-bg);
+  border-color: #F1B8B2;
+  color: var(--a-danger);
+}
+
+.alert-warning {
+  background: var(--a-warning-bg);
+  border-color: #F0D58A;
+  color: var(--a-warning);
+}
+
+.alert-list {
+  margin: 6px 0 0;
+  padding-left: 1.2em;
+}
+
+/* ---------- 其他 ---------- */
+
+.empty {
+  margin: 0;
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--a-muted);
+}
+
+.loading {
+  color: var(--a-muted);
+}
+
+/* 收款 QR Code 區塊 */
+.qr-panel {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* QR Code 四周留白，掃描比較穩定 */
+.qr-box {
+  padding: 12px;
+  background: #FFFFFF;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+  line-height: 0;
+}
+
+.qr-url {
+  max-width: 100%;
+  margin: 0;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+/* 報表的統計數字 */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stat-label {
+  margin: 0;
+  color: var(--a-muted);
+  font-size: 0.875rem;
+}
+
+.stat-value {
+  margin: 4px 0 0;
+  font-family: var(--a-display);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 占比長條 */
+.bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-track {
+  display: inline-block;
+  width: 120px;
+  height: 8px;
+  background: var(--a-hover);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--a-accent);
+}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
 import { apiFetch } from './api'
 import { orderTypeLabel } from './labels'
 import type { MonthlyReport } from './types'
@@ -16,56 +15,79 @@ export default function ReportPage() {
 
   useEffect(() => {
     if (!month) return
+    // ignore：快速切換月份時，晚回來的舊月份結果直接丟掉
+    let ignore = false
     const [year, m] = month.split('-')
-    setError('')
     apiFetch<MonthlyReport>(`/api/reports/monthly?year=${year}&month=${Number(m)}`)
-      .then(setReport)
-      .catch(err => setError(err.message))
+      .then(data => { if (!ignore) setReport(data) })
+      .catch(err => { if (!ignore) setError(err.message) })
+    return () => { ignore = true }
   }, [month])
 
-  return (
-    <div>
-      <h2>營收報表</h2>
-      <Link to="/">回會員列表</Link>
+  // 清掉錯誤在使用者換月份的當下設定，不放進 effect
+  function changeMonth(value: string) {
+    setMonth(value)
+    setError('')
+  }
 
-      <div>
-        <label>月份 <input type="month" value={month} onChange={e => setMonth(e.target.value)} /></label>
+  return (
+    <>
+      <div className="page-header">
+        <h2>營收報表</h2>
       </div>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div className="toolbar">
+        <label className="field">
+          <span className="field-label">月份</span>
+          <input type="month" value={month} onChange={e => changeMonth(e.target.value)} />
+        </label>
+      </div>
+
+      {error && <p className="alert alert-error" role="alert">{error}</p>}
 
       {report && (
         <>
-          <p>本月營收：NT$ {report.totalAmount.toLocaleString()}（共 {report.totalCount} 筆）</p>
+          <div className="stat-grid">
+            <div className="card">
+              <p className="stat-label">本月營收</p>
+              <p className="stat-value">NT$ {report.totalAmount.toLocaleString()}</p>
+            </div>
+            <div className="card">
+              <p className="stat-label">已付款訂單</p>
+              <p className="stat-value">{report.totalCount} 筆</p>
+            </div>
+          </div>
 
-          {report.byType.length === 0 ? (
-            <p>這個月沒有已付款的訂單</p>
-          ) : (
-            <table>
-              <thead>
-                <tr><th>類型</th><th>筆數</th><th>金額</th><th>占比</th></tr>
-              </thead>
-              <tbody>
-                {report.byType.map(t => (
-                  <tr key={t.orderType}>
-                    <td>{orderTypeLabel[t.orderType]}</td>
-                    <td>{t.count}</td>
-                    <td>{t.amount.toLocaleString()}</td>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ width: 120, height: 10, background: '#eee' }}>
-                          <div style={{ width: `${t.percentage}%`, height: '100%', background: '#4a90d9' }} />
-                        </div>
-                        {t.percentage}%
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <div className="table-wrap">
+            {report.byType.length === 0 ? (
+              <p className="empty">這個月沒有已付款的訂單</p>
+            ) : (
+              <table className="table">
+                <thead>
+                  <tr><th>類型</th><th className="num">筆數</th><th className="num">金額</th><th>占比</th></tr>
+                </thead>
+                <tbody>
+                  {report.byType.map(t => (
+                    <tr key={t.orderType}>
+                      <td>{orderTypeLabel[t.orderType]}</td>
+                      <td className="num">{t.count}</td>
+                      <td className="num">{t.amount.toLocaleString()}</td>
+                      <td>
+                        <span className="bar">
+                          <span className="bar-track">
+                            <span className="bar-fill" style={{ width: `${t.percentage}%` }} />
+                          </span>
+                          {t.percentage}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </>
       )}
-    </div>
+    </>
   )
 }

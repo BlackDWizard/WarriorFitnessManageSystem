@@ -1,11 +1,38 @@
 .bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 16px;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #ccc;
+  min-height: 56px;
+  padding: 8px 24px;
+  background: var(--a-surface);
+  border-bottom: 1px solid var(--a-line);
+}
+
+/* 桌機不需要漢堡按鈕 */
+.menuButton {
+  display: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+  background: transparent;
+  cursor: pointer;
+}
+
+/* margin-left: auto 把登入資訊推到最右邊 */
+.session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-left: auto;
 }
 
 .name {
@@ -15,16 +42,35 @@
 /* tabular-nums 讓每個數字等寬，倒數時文字不會左右跳動 */
 .timer {
   font-variant-numeric: tabular-nums;
-  color: #555;
+  color: var(--a-muted);
+  font-size: 0.9rem;
 }
 
 .timerWarning {
-  color: #b42318;
+  color: var(--a-danger);
   font-weight: 700;
 }
 
 .alert {
   flex-basis: 100%;
   margin: 0;
-  color: #b42318;
+  color: var(--a-danger);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .bar {
+    padding: 8px 16px;
+  }
+
+  .menuButton {
+    display: inline-flex;
+  }
+}
+
+/* 很窄的手機上省略名稱，留空間給倒數和按鈕 */
+@media (max-width: 480px) {
+  .name {
+    display: none;
+  }
 }

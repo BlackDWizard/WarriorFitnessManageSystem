@@ -84,24 +84,65 @@ export default function MemberForm() {
       setSaving(false)
     }
   }
-
-  if (loading) return <p>載入中...</p>
+  if (loading) return <p className="loading">載入中...</p>
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{isEdit ? '編輯會員' : '新增會員'}</h2>
+    <>
+      <div className="page-header">
+        <h2>{isEdit ? '編輯會員' : '新增會員'}</h2>
+      </div>
 
-      <div><label>姓名＊ <input value={form.memberName} onChange={e => update('memberName', e.target.value)} /></label></div>
-      <div><label>電話 <input value={form.memberPhoneNo} onChange={e => update('memberPhoneNo', e.target.value)} /></label></div>
-      <div><label>Email <input type="email" value={form.memberEmail} onChange={e => update('memberEmail', e.target.value)} /></label></div>
-      <div><label>方案 <input value={form.memberType} onChange={e => update('memberType', e.target.value)} /></label></div>
-      <div><label>繳費金額 <input type="number" min="0" step="1" value={form.memberPaidAmount} onChange={e => update('memberPaidAmount', e.target.value)} /></label></div>
-      <div><label>到期日 <input type="date" value={form.memberValidUntil} onChange={e => update('memberValidUntil', e.target.value)} /></label></div>
-      <div><label>備註 <textarea value={form.memberRemark} onChange={e => update('memberRemark', e.target.value)} /></label></div>
+      <form className="card form" onSubmit={handleSubmit}>
+        {error && <p className="alert alert-error" role="alert">{error}</p>}
 
-      <button type="submit" disabled={saving}>{saving ? '儲存中...' : '儲存'}</button>
-      <button type="button" onClick={() => navigate('/')}>取消</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </form>
+        <label className="field">
+          <span className="field-label">姓名<span className="required">＊</span></span>
+          <input value={form.memberName} onChange={e => update('memberName', e.target.value)} />
+        </label>
+
+        <div className="field-row">
+          <label className="field">
+            <span className="field-label">電話</span>
+            <input type="tel" value={form.memberPhoneNo} onChange={e => update('memberPhoneNo', e.target.value)} />
+          </label>
+          <label className="field">
+            <span className="field-label">Email</span>
+            <input type="email" value={form.memberEmail} onChange={e => update('memberEmail', e.target.value)} />
+          </label>
+        </div>
+
+        <label className="field">
+          <span className="field-label">方案</span>
+          <input value={form.memberType} onChange={e => update('memberType', e.target.value)} />
+        </label>
+
+        <div className="field-row">
+          <label className="field">
+            <span className="field-label">繳費金額</span>
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value={form.memberPaidAmount}
+              onChange={e => update('memberPaidAmount', e.target.value)}
+            />
+          </label>
+          <label className="field">
+            <span className="field-label">到期日</span>
+            <input type="date" value={form.memberValidUntil} onChange={e => update('memberValidUntil', e.target.value)} />
+          </label>
+        </div>
+
+        <label className="field">
+          <span className="field-label">備註</span>
+          <textarea value={form.memberRemark} onChange={e => update('memberRemark', e.target.value)} />
+        </label>
+
+        <div className="form-actions">
+          <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? '儲存中...' : '儲存'}</button>
+          <button type="button" className="btn" onClick={() => navigate('/')}>取消</button>
+        </div>
+      </form>
+    </>
   )
 }

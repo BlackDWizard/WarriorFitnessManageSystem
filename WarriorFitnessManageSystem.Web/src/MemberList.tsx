@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { apiFetch } from './api'
-import type { Member, MemberStatus } from './types'
+import { memberStatusLabel, memberStatusTone } from './labels'
+import type { Member } from './types'
 import ExpiringMembers from './ExpiringMembers'
-
-const statusLabel: Record<MemberStatus, string> = {
-  Active: '有效',
-  Expired: '已到期',
-  Suspended: '停權',
-}
 
 export default function MemberList() {
   const [members, setMembers] = useState<Member[]>([])
@@ -37,42 +32,62 @@ export default function MemberList() {
     }
   }
 
-  if (loading) return <p>載入中...</p>
-
   return (
-    <div>
-      <h2>會員列表</h2>
-      <ExpiringMembers />
-      <Link to="/members/new">新增會員</Link>
-      <Link to="/charge">現場收款</Link>
-      <Link to="/orders">訂單紀錄</Link>
-      <Link to="/reports">報表</Link>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <>
+      <div className="page-header">
+        <h2>會員列表</h2>
+        <Link to="/members/new" className="btn btn-primary">新增會員</Link>
+      </div>
 
-      <table>
-        <thead>
-          <tr><th>姓名</th><th>電話</th><th>方案</th><th>到期日</th><th>狀態</th><th>操作</th></tr>
-        </thead>
-        <tbody>
-          {members.map(m => (
-            <tr key={m.memberID}>
-              <td>{m.memberName}</td>
-              <td>{m.memberPhoneNo ?? '-'}</td>
-              <td>{m.memberType ?? '-'}</td>
-              <td>{m.memberValidUntil ?? '-'}</td>
-              <td>{statusLabel[m.memberStatus]}</td>
-              <td>
-                <Link to={`/members/${m.memberID}/edit`}>編輯</Link>
-                <Link to={`/charge?memberId=${m.memberID}&name=${encodeURIComponent(m.memberName)}`}>收款</Link>
-                <button onClick={() => toggleStatus(m)}>
-                  {m.memberStatus === 'Suspended' ? '恢復' : '停權'}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {members.length === 0 && <p>目前沒有會員資料</p>}
-    </div>
+      <ExpiringMembers />
+
+      {error && <p className="alert alert-error" role="alert">{error}</p>}
+
+      {loading ? (
+        <p className="loading">載入中...</p>
+      ) : (
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr><th>姓名</th><th>電話</th><th>方案</th><th>到期日</th><th>狀態</th><th>操作</th></tr>
+            </thead>
+            <tbody>
+              {members.map(m => (
+                <tr key={m.memberID}>
+                  <td>{m.memberName}</td>
+                  <td>{m.memberPhoneNo ?? '-'}</td>
+                  <td>{m.memberType ?? '-'}</td>
+                  <td>{m.memberValidUntil ?? '-'}</td>
+                  <td>
+                    <span className={`badge badge-${memberStatusTone[m.memberStatus]}`}>
+                      {memberStatusLabel[m.memberStatus]}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="btn-group">
+                      <Link to={`/members/${m.memberID}/edit`} className="btn btn-sm">編輯</Link>
+                      <Link
+                        to={`/charge?memberId=${m.memberID}&name=${encodeURIComponent(m.memberName)}`}
+                        className="btn btn-sm"
+                      >
+                        收款
+                      </Link>
+                      <button
+                        type="button"
+                        className={m.memberStatus === 'Suspended' ? 'btn btn-sm' : 'btn btn-sm btn-danger'}
+                        onClick={() => toggleStatus(m)}
+                      >
+                        {m.memberStatus === 'Suspended' ? '恢復' : '停權'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {members.length === 0 && <p className="empty">目前沒有會員資料，按右上角「新增會員」開始建立。</p>}
+        </div>
+      )}
+    </>
   )
 }

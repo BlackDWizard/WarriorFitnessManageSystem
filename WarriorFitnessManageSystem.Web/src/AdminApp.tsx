@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
-import './index.css'
+import './admin.css'
 import { checkSession } from './auth'
 import { useSession } from './session'
-import AdminHeader from './AdminHeader'
+import AdminLayout from './AdminLayout'
 import Login from './Login'
 import MemberList from './MemberList'
 import MemberForm from './MemberForm'
@@ -32,23 +32,23 @@ export default function AdminApp() {
     <>
       <meta name="robots" content="noindex, nofollow" />
 
-      {session.status === 'checking' && <p>載入中...</p>}
+      {session.status === 'checking' && <p className="loading" style={{ padding: 24 }}>載入中...</p>}
 
       {session.status === 'signedOut' && <Login />}
 
       {session.status === 'signedIn' && (
-        <>
-          <AdminHeader displayName={session.displayName} expiresAt={session.expiresAt} />
-          <Routes>
-            <Route path="/" element={<MemberList />} />
-            <Route path="/members/new" element={<MemberForm />} />
-            <Route path="/members/:id/edit" element={<MemberForm />} />
-            <Route path="/charge" element={<ChargeForm />} />
-            <Route path="/orders" element={<OrderList />} />
-            <Route path="/reports" element={<ReportPage />} />
+        <Routes>
+          {/* 沒有 path 的 Route 只負責套版面，跟前台的 PublicLayout 是同樣的做法 */}
+          <Route element={<AdminLayout displayName={session.displayName} expiresAt={session.expiresAt} />}>
+            <Route index element={<MemberList />} />
+            <Route path="members/new" element={<MemberForm />} />
+            <Route path="members/:id/edit" element={<MemberForm />} />
+            <Route path="charge" element={<ChargeForm />} />
+            <Route path="orders" element={<OrderList />} />
+            <Route path="reports" element={<ReportPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </>
+          </Route>
+        </Routes>
       )}
     </>
   )

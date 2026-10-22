@@ -1,0 +1,149 @@
+/* 桌機：左側固定選單 + 右側內容。手機：選單收進左側抽屜 */
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 232px 1fr;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--a-ink);
+  color: #E4E7E1;
+}
+
+.sidebar :focus-visible {
+  outline-color: var(--a-accent);
+}
+
+.brand {
+  display: block;
+  padding: 20px 20px 16px;
+  font-family: var(--a-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.brandSub {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--a-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: none;
+  color: #A9B1A6;
+}
+
+.group {
+  padding: 8px 0 12px;
+}
+
+.groupTitle {
+  margin: 0;
+  padding: 8px 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #A9B1A6;
+}
+
+.navList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: block;
+  padding: 9px 20px 9px 16px;
+  border-left: 4px solid transparent;
+  color: inherit;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navLinkActive,
+.navLinkActive:hover {
+  border-left-color: var(--a-accent);
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+/* margin-top: auto 把這個連結推到選單最底下 */
+.siteLink {
+  margin-top: auto;
+  padding: 16px 20px;
+  font-size: 0.85rem;
+  color: #A9B1A6;
+  text-decoration: none;
+}
+
+.siteLink:hover {
+  color: #FFFFFF;
+}
+
+/* min-width: 0 讓寬表格在格線裡可以捲動，而不是把整個版面撐開 */
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  padding: 24px;
+}
+
+.backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  /* 收起時用 visibility: hidden，鍵盤 Tab 不會跑進看不見的選單裡 */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 260px;
+    z-index: 60;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.2s ease, visibility 0s linear 0.2s;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.2s ease;
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(31, 41, 51, 0.45);
+  }
+
+  .content {
+    padding: 16px;
+  }
+}
