@@ -5,9 +5,6 @@ import { apiFetch } from './api'
 import { orderStatusTone } from './labels'
 import type { OrderStatus, OrderType } from './types'
 
-type OrderType = 'MembershipRenew' | 'Walkin' | 'Other'
-type OrderStatus = 'Pending' | 'Paid' | 'Failed' | 'Cancelled'
-
 type CreateOrderResponse = {
   order: { orderID: string; orderStatus: OrderStatus }
   paymentUrl: string
