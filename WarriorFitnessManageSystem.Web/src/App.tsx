@@ -1,29 +1,17 @@
-import { useState } from 'react'
-import { Navigate, Route, Routes } from 'react-router'
-import { getToken } from './api'
-import Login from './Login'
-import MemberList from './MemberList'
-import MemberForm from './MemberForm'
-import ChargeForm from './ChargeForm'
-import OrderList from './OrderList'
-import ReportPage from './ReportPage'
+import { lazy, Suspense } from 'react';
+import { getSiteKind } from './site';
+
+// lazy 讓前台、後台各自打包成獨立的檔案：
+// 一般訪客只會下載前台的程式，後台的程式碼與樣式不會被載入
+const AdminApp = lazy(() => import('./AdminApp'));
+const PublicApp = lazy(() => import('./public/PublicApp'));
+
+const siteKind = getSiteKind();
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(() => getToken() !== null)
-
-  if (!loggedIn) {
-    return <Login onLogin={() => setLoggedIn(true)} />
-  }
-
   return (
-    <Routes>
-      <Route path="/" element={<MemberList onLogout={() => setLoggedIn(false)} />} />
-      <Route path="/members/new" element={<MemberForm />} />
-      <Route path="/members/:id/edit" element={<MemberForm />} />
-      <Route path="/charge" element={<ChargeForm />} />
-      <Route path="/orders" element={<OrderList />} />
-      <Route path="/reports" element={<ReportPage />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  )
+    <Suspense fallback={null}>
+      {siteKind === 'admin' ? <AdminApp /> : <PublicApp />}
+    </Suspense>
+  );
 }

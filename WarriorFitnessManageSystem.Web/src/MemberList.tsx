@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { apiFetch, clearToken } from './api'
+import { apiFetch } from './api'
 import type { Member, MemberStatus } from './types'
 import ExpiringMembers from './ExpiringMembers'
 
@@ -10,7 +10,7 @@ const statusLabel: Record<MemberStatus, string> = {
   Suspended: '停權',
 }
 
-export default function MemberList({ onLogout }: { onLogout: () => void }) {
+export default function MemberList() {
   const [members, setMembers] = useState<Member[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -37,11 +37,6 @@ export default function MemberList({ onLogout }: { onLogout: () => void }) {
     }
   }
 
-  function handleLogout() {
-    clearToken()
-    onLogout()
-  }
-
   if (loading) return <p>載入中...</p>
 
   return (
@@ -52,7 +47,6 @@ export default function MemberList({ onLogout }: { onLogout: () => void }) {
       <Link to="/charge">現場收款</Link>
       <Link to="/orders">訂單紀錄</Link>
       <Link to="/reports">報表</Link>
-      <button onClick={handleLogout}>登出</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <table>

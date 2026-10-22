@@ -1,13 +1,10 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using System.Text;
 using WarriorFitnessManageSystem.Api.Data;
 using WarriorFitnessManageSystem.Api.Data.Options;
 using WarriorFitnessManageSystem.Api.Endpoints;
 using WarriorFitnessManageSystem.Api.Services;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,47 +24,21 @@ builder.Services.AddScoped(sp =>
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection("App"));
 
 //Auth 設定
-builder.Services.Configure<AuthOptions>(
-    builder.Configuration.GetSection("Auth"));
+//Auth 設定
+builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AdminAuthService>();
+builder.Services.AddScoped<AdminSessionService>();
 
-//JWT 驗證機制
-var authOptions = builder.Configuration.GetSection("Auth").Get<AuthOptions>()!;
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = authOptions.Issuer,
-            ValidateAudience = true,
-            ValidAudience = authOptions.Issuer,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOptions.SigningKey))
-        };
-    });
+//Session 驗證機制：cookie 只放隨機 token，登入狀態記錄在 AdminSessions 資料表
+builder.Services.AddAuthentication(SessionAuthenticationHandler.SchemeName)
+    .AddScheme<AuthenticationSchemeOptions, SessionAuthenticationHandler>(
+        SessionAuthenticationHandler.SchemeName, null);
 builder.Services.AddAuthorization();
 
+//Swagger：在 Swagger 裡呼叫 /api/auth/login 後，瀏覽器會自動帶 cookie，不用再貼 token
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "請輸入：Bearer {你的token}",
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
-
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecuritySchemeReference("Bearer", document),
-            new List<string>()
-        }
-    });
-});
+builder.Services.AddSwaggerGen();
 
 var allowedOrigins = builder.Configuration.GetSection("App:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
@@ -75,7 +46,9 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy => policy
         .WithOrigins(allowedOrigins)
         .AllowAnyHeader()
-        .AllowAnyMethod());
+        .AllowAnyMethod()
+        .AllowCredentials()                                              // 允許跨網域帶 cookie
+        .WithExposedHeaders(SessionAuthenticationHandler.ExpiresInHeader)); // 讓前端讀得到剩餘秒數
 });
 
 var app = builder.Build();

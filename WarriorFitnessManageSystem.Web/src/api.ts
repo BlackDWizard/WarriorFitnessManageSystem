@@ -1,24 +1,24 @@
-const TOKEN_KEY = 'token'
+import { markSignedOut, updateExpiresIn } from './session'
+
 export const API_BASE = import.meta.env.VITE_API_BASE_URL ?? ''
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY)
-export const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token)
-export const clearToken = () => localStorage.removeItem(TOKEN_KEY)
-
 export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = getToken()
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
+    // 跨網域（admin. → api.）也要帶上 cookie；token 不再由程式手動放進 header
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   })
 
+  // 每次成功的請求都會延長 Session，伺服器用這個 header 告訴我們新的剩餘秒數
+  const expiresIn = res.headers.get('X-Session-Expires-In')
+  if (expiresIn !== null) updateExpiresIn(Number(expiresIn))
+
   if (res.status === 401) {
-    clearToken()
-    window.location.reload()
-    throw new Error('登入已失效，請重新登入')
+    markSignedOut()
+    throw new Error('登入已逾時，請重新登入')
   }
 
   const text = await res.text()

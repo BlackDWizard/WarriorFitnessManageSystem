@@ -49,3 +49,9 @@ export type ExpiringMember = {
   memberValidUntil: string
   daysLeft: number
 }
+
+export type SessionInfo = {
+  username: string
+  displayName: string
+  expiresInSeconds: number
+}

@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<PaymentRecord> PaymentRecords => Set<PaymentRecord>();
     public DbSet<Admin> Admins => Set<Admin>();
+    public DbSet<AdminSession> AdminSessions => Set<AdminSession>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,6 +29,14 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<PaymentRecord>()
             .Property(p => p.PaymentRecordGatewayRawPayload)
             .HasColumnType("jsonb");
+
+            modelBuilder.Entity<AdminSession>().ToTable("adminsessions");
+
+        //一個管理員可以有多筆 Session（多台裝置、歷次登入）
+        modelBuilder.Entity<AdminSession>()
+            .HasOne(s => s.Admin)
+            .WithMany()
+            .HasForeignKey(s => s.AdminID);
 
     }
 }

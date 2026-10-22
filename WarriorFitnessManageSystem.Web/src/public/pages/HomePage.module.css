@@ -1,0 +1,123 @@
+/* 輪播的位置先用地板警示線的斜紋佔位 */
+.banner {
+  max-width: 1440px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--wf-plate) 0 28px,
+    var(--wf-steel) 28px 56px
+  );
+}
+
+.bannerPlaceholder {
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--wf-chalk);
+  font-weight: 700;
+}
+
+.intro {
+  border-bottom: 1px solid var(--wf-line);
+}
+
+.introInner {
+  max-width: var(--wf-max);
+  margin: 0 auto;
+  padding: 56px 20px;
+}
+
+.headline {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.lead {
+  max-width: 32em;
+  margin: 16px 0 0;
+  font-size: 1.125rem;
+  color: var(--wf-iron);
+}
+
+.actions {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.primaryAction,
+.secondaryAction {
+  min-height: 48px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid var(--wf-steel);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.primaryAction {
+  background: var(--wf-plate);
+  color: var(--wf-steel);
+}
+
+.primaryAction:hover {
+  background: var(--wf-steel);
+  color: var(--wf-plate);
+}
+
+.secondaryAction {
+  background: transparent;
+  color: var(--wf-steel);
+}
+
+.secondaryAction:hover {
+  background: var(--wf-steel);
+  color: var(--wf-chalk);
+}
+
+.testimonials {
+  background: var(--wf-mist);
+}
+
+.sectionInner {
+  max-width: var(--wf-max);
+  margin: 0 auto;
+  padding: 56px 20px;
+}
+
+.sectionTitle {
+  margin: 0 0 24px;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* 手機上可以左右滑動，滑動時會對齊到每張截圖 */
+.shotRow {
+  margin: 0;
+  padding: 0 0 8px;
+  list-style: none;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 1fr);
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.shot {
+  aspect-ratio: 3 / 4;
+  display: grid;
+  place-items: center;
+  scroll-snap-align: start;
+  background: var(--wf-chalk);
+  border: 1px dashed #AEB5AC;
+  color: var(--wf-iron);
+  font-size: 0.875rem;
+}

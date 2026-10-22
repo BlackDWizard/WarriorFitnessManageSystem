@@ -1,43 +1,33 @@
 import { useState, type FormEvent } from 'react'
-import { API_BASE, setToken } from './api'
+import { login } from './auth'
 
+export default function Login() {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-export default function Login({ onLogin }: { onLogin: () => void }) {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-
-    async function handleSubmit(e: FormEvent) {
-        e.preventDefault()
-        setError('')
-
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
-        })
-
-        if (res.status === 401) {
-            setError('帳號或密碼錯誤')
-            return
-        }
-        if (!res.ok) {
-            setError(`登入失敗（HTTP ${res.status}）`)
-            return
-        }
-
-        const data: { token: string } = await res.json()
-        setToken(data.token)
-        onLogin()
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    setError('')
+    setSubmitting(true)
+    try {
+      await login(username, password)
+      // 成功後 session store 變成 signedIn，AdminApp 會自動切換畫面，這裡不用做任何事
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setSubmitting(false)
     }
+  }
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <h2>管理員登入</h2>
-            <input placeholder="帳號" value={username} onChange={e => setUsername(e.target.value)} />
-            <input type="password" placeholder="密碼" value={password} onChange={e => setPassword(e.target.value)} />
-            <button type="submit">登入</button>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-        </form>
-    )
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>管理員登入</h2>
+      <input placeholder="帳號" value={username} onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="密碼" value={password} onChange={e => setPassword(e.target.value)} />
+      <button type="submit" disabled={submitting}>{submitting ? '登入中...' : '登入'}</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </form>
+  )
 }

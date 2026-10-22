@@ -1,0 +1,55 @@
+import { useEffect } from 'react'
+import { Navigate, Route, Routes } from 'react-router'
+import './index.css'
+import { checkSession } from './auth'
+import { useSession } from './session'
+import AdminHeader from './AdminHeader'
+import Login from './Login'
+import MemberList from './MemberList'
+import MemberForm from './MemberForm'
+import ChargeForm from './ChargeForm'
+import OrderList from './OrderList'
+import ReportPage from './ReportPage'
+
+export default function AdminApp() {
+  const session = useSession()
+
+  // 一打開就問伺服器目前有沒有登入
+  useEffect(() => {
+    void checkSession()
+  }, [])
+
+  // 切回這個分頁時重新對時：可能在別的分頁登出或延長過，或電腦休眠過
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible') void checkSession()
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [])
+
+  return (
+    <>
+      <meta name="robots" content="noindex, nofollow" />
+
+      {session.status === 'checking' && <p>載入中...</p>}
+
+      {session.status === 'signedOut' && <Login />}
+
+      {session.status === 'signedIn' && (
+        <>
+          <AdminHeader displayName={session.displayName} expiresAt={session.expiresAt} />
+          <Routes>
+            <Route path="/" element={<MemberList />} />
+            <Route path="/members/new" element={<MemberForm />} />
+            <Route path="/members/:id/edit" element={<MemberForm />} />
+            <Route path="/charge" element={<ChargeForm />} />
+            <Route path="/orders" element={<OrderList />} />
+            <Route path="/reports" element={<ReportPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </>
+      )}
+    </>
+  )
+}

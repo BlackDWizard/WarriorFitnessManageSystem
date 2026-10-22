@@ -1,0 +1,45 @@
+/* 前台共用的顏色、字型與基本設定。只在前台載入，不影響後台 */
+:root {
+  --wf-chalk: #F5F6F3;   /* 底色：止滑粉的白 */
+  --wf-steel: #1F2933;   /* 文字與深色區塊：槓鈴的鋼 */
+  --wf-iron: #52606D;    /* 次要文字 */
+  --wf-plate: #E8B420;   /* 強調色：地板警示線的黃，只當底色用，不當文字色 */
+  --wf-line: #D3D8D0;    /* 分隔線 */
+  --wf-mist: #E9ECE6;    /* 區塊底色 */
+
+  --wf-display: 'Barlow Condensed', 'Noto Sans TC', sans-serif;
+  --wf-body: 'Noto Sans TC', system-ui, sans-serif;
+  --wf-max: 1200px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 蓋掉 Vite 範本 index.css 對 body 的置中排版 */
+body {
+  margin: 0;
+  display: block;
+  min-width: 0;
+  background: var(--wf-chalk);
+  color: var(--wf-steel);
+  font-family: var(--wf-body);
+  line-height: 1.7;
+}
+
+:focus-visible {
+  outline: 3px solid var(--wf-steel);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

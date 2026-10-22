@@ -1,0 +1,30 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.name {
+  font-weight: 700;
+}
+
+/* tabular-nums 讓每個數字等寬，倒數時文字不會左右跳動 */
+.timer {
+  font-variant-numeric: tabular-nums;
+  color: #555;
+}
+
+.timerWarning {
+  color: #b42318;
+  font-weight: 700;
+}
+
+.alert {
+  flex-basis: 100%;
+  margin: 0;
+  color: #b42318;
+}
