@@ -1,0 +1,52 @@
+.hint {
+  margin: 0 0 16px;
+  color: var(--wf-iron);
+  font-size: 0.9rem;
+}
+
+/* 價目圖由上往下排，寬度限制在 800px：價目表的字太寬反而不好讀 */
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 24px;
+  max-width: 800px;
+}
+
+.imageButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+/* 還沒載入時先佔一點高度，避免一堆圖片疊在一起又突然撐開 */
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  background: var(--wf-mist);
+}
+
+.cta {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--wf-line);
+  max-width: 800px;
+}
+
+.ctaText {
+  margin: 0 0 16px;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}

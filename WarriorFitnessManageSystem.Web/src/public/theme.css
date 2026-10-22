@@ -29,6 +29,11 @@ body {
   line-height: 1.7;
 }
 
+/* 放大檢視的對話框開著時，背後的頁面不能捲動 */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
 :focus-visible {
   outline: 3px solid var(--wf-steel);
   outline-offset: 2px;
