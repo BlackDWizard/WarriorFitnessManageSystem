@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { FaBars, FaXmark } from 'react-icons/fa6';
 import { footerNav, mainNav, siteName, socialLinks } from './siteConfig';
+import { siteContent } from './siteContent';
 import SocialIcons from './components/SocialIcons';
 import styles from './PublicLayout.module.css';
-import { siteContent } from './siteContent';
 
 // 年份在載入時算一次就好；寫在元件裡面，每次渲染都會重新呼叫 new Date()
 const currentYear = new Date().getFullYear();
@@ -33,8 +33,10 @@ export default function PublicLayout() {
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <Link to="/" className={styles.brand} onClick={closeMenu}>
-            {/* 有 LOGO 就顯示圖片（alt 是品牌名稱），沒有就顯示文字 */}
-            {siteContent.logoSrc ? <img src={siteContent.logoSrc} alt={siteName} className={styles.logo} /> : siteName}
+            {/* LOGO 和文字一起顯示：LOGO 縮小後上面的字看不清楚，旁邊再寫一次品牌名稱。
+                文字已經說明了品牌，所以圖片的 alt 留空，螢幕報讀器不會唸兩次 */}
+            {siteContent.logoSrc && <img src={siteContent.logoSrc} alt="" className={styles.logo} />}
+            <span>{siteName}</span>
           </Link>
 
           <button
@@ -69,7 +71,11 @@ export default function PublicLayout() {
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <div>
-            <p className={styles.footerBrand}>{siteName}</p>
+            <p className={styles.footerBrand}>
+              {/* 頁尾是深色底，LOGO 的深藍色會看不見，放在白色圓形底上 */}
+              {siteContent.logoSrc && <img src={siteContent.logoSrc} alt="" className={styles.footerLogo} />}
+              {siteName}
+            </p>
             <nav aria-label="網站資訊" className={styles.footerNav}>
               {footerNav.map((item) => (
                 <Link key={item.to} to={item.to} className={styles.footerLink}>

@@ -25,6 +25,7 @@ export default function Login() {
   return (
     <div className={styles.page}>
       <form className={`card ${styles.card}`} onSubmit={handleSubmit}>
+        <img src="/logo.png" alt="" className={styles.logo} />
         <p className={styles.brand}>Warrior Fitness</p>
         <h1 className={styles.title}>管理員登入</h1>
 

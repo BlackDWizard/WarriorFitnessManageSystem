@@ -36,8 +36,12 @@ export default function AdminLayout({ displayName, expiresAt }: Props) {
         className={menuOpen ? `${styles.sidebar} ${styles.sidebarOpen}` : styles.sidebar}
       >
         <Link to="/" className={styles.brand} onClick={closeMenu}>
-          Warrior Fitness
-          <span className={styles.brandSub}>管理後台</span>
+          {/* 側欄是深色底，LOGO 放在白色圓形底上才看得清楚 */}
+          <img src="/logo.png" alt="" className={styles.brandLogo} />
+          <span>
+            Warrior Fitness
+            <span className={styles.brandSub}>管理後台</span>
+          </span>
         </Link>
 
         <nav>

@@ -44,6 +44,9 @@
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--wf-display);
   font-weight: 800;
   font-size: 1.75rem;
@@ -55,8 +58,8 @@
 
 .logo {
   display: block;
-  height: 40px;
-  width: auto;
+  width: 48px;
+  height: 48px;
 }
 
 .nav {
@@ -167,12 +170,23 @@
 }
 
 .footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin: 0 0 12px;
   font-family: var(--wf-display);
   font-weight: 800;
   font-size: 1.5rem;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.footerLogo {
+  width: 56px;
+  height: 56px;
+  padding: 4px;
+  border-radius: 50%;
+  background: #FFFFFF;
 }
 
 .footerNav {

@@ -7,7 +7,7 @@ export const siteContent = {
 
     // LOGO：把圖片放進 Web 專案的 public/ 資料夾，例如 public/logo.png，這裡填 '/logo.png'
     // 填 null 就顯示文字的品牌名稱
-    logoSrc: null as string | null,
+    logoSrc: '/logo.png' as string | null,
 
     // 首頁大標題和副標
     slogan: '不要這麼爛。',
