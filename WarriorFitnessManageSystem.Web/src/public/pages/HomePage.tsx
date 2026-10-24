@@ -4,27 +4,37 @@ import Carousel from '../components/Carousel';
 import ImageStrip from '../components/ImageStrip';
 import { useSiteImages } from '../hooks/useSiteImages';
 import buttons from '../styles/buttons.module.css';
+import { siteContent } from '../siteContent';
 import styles from './HomePage.module.css';
 
-// 文案都是暫定的，請換成健身房自己的話
 export default function HomePage() {
   const banners = useSiteImages('Banner');
   const testimonials = useSiteImages('Testimonial');
   const gallery = useSiteImages('Gallery');
 
+
   return (
     <>
       <Seo />
 
-      {/* 載入中先放一個同樣比例的灰色區塊佔位，圖片出來時版面不會往下跳 */}
-      {banners.status === 'loading' && <div className={styles.bannerSkeleton} aria-hidden="true" />}
-      {/* 沒有活動圖或載入失敗時整塊不顯示，直接從介紹區開始 */}
-      {banners.status === 'ready' && <Carousel images={banners.images} label="最新活動" />}
+      {/* 活動輪播：深色橫條撐滿寬度，正方形的圖放在中間（桌機最寬 640px，手機撐滿） */}
+      {banners.status === 'loading' && (
+        <div className={styles.bannerBand} aria-hidden="true">
+          <div className={`${styles.bannerFrame} ${styles.bannerSkeleton}`} />
+        </div>
+      )}
+      {banners.status === 'ready' && banners.images.length > 0 && (
+        <div className={styles.bannerBand}>
+          <div className={styles.bannerFrame}>
+            <Carousel images={banners.images} label="最新活動" aspectRatio="1 / 1" />
+          </div>
+        </div>
+      )}
 
       <section className={styles.intro}>
         <div className={styles.introInner}>
-          <h1 className={styles.headline}>從第一次握槓開始</h1>
-          <p className={styles.lead}>教練陪你把動作練對，再把重量練上去。</p>
+          <h1 className={styles.headline}>{siteContent.slogan}</h1>
+          <p className={styles.lead}>{siteContent.tagline}</p>
           <div className={styles.actions}>
             <Link to="/form" className={buttons.primary}>
               預約體驗課

@@ -1,0 +1,54 @@
+.slogan {
+  margin: 8px 0 24px;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.text {
+  max-width: 40em;
+  font-size: 1.05rem;
+}
+
+.text p {
+  margin: 0 0 16px;
+}
+
+/* 三個特色：桌機三欄，手機一欄 */
+.features {
+  margin: 40px 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* 左邊的黃色粗線，跟頁面標題的黃色底線呼應 */
+.feature {
+  padding: 20px;
+  background: var(--wf-mist);
+  border-left: 4px solid var(--wf-plate);
+}
+
+.featureTitle {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+}
+
+.featureText {
+  margin: 0;
+  color: var(--wf-iron);
+}
+
+.sectionTitle {
+  margin: 48px 0 16px;
+  font-size: 1.5rem;
+}
+
+.cta {
+  margin-top: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}

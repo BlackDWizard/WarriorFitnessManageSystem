@@ -135,7 +135,7 @@ public static class SiteImageEndpoints
         });
 
         //刪除：先刪資料，再刪檔案
-        group.MapDelete("/{id:guid}", async (Guid id, AppDbContext db, SupabaseStorageService storage, ILogger<SupabaseStorageService> logger) =>
+        group.MapDelete("/{id:guid}", async (Guid id, AppDbContext db, SupabaseStorageService storage) =>
         {
             var image = await db.SiteImages.FindAsync(id);
             if (image is null)
@@ -147,14 +147,7 @@ public static class SiteImageEndpoints
             await db.SaveChangesAsync();
 
             // 檔案刪除失敗不影響結果：資料已經刪了，前台不會再顯示，只是 Storage 多一個沒人用的檔案
-            try
-            {
-                await storage.DeleteAsync(image.SiteImageStoragePath);
-            }
-            catch (HttpRequestException ex)
-            {
-                logger.LogWarning(ex, "圖片資料已刪除，但 Storage 檔案 {Path} 刪除失敗", image.SiteImageStoragePath);
-            }
+            await storage.TryDeleteAsync(image.SiteImageStoragePath);
 
             return Results.NoContent();
         });

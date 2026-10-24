@@ -320,6 +320,27 @@ button {
   padding-left: 1.2em;
 }
 
+/* ---------- 清單標題列：左邊標題，右邊排序狀態等提示 ---------- */
+
+.list-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin: 28px 0 12px;
+}
+
+.list-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.list-status {
+  font-size: 0.85rem;
+  color: var(--a-muted);
+}
+
 /* ---------- 其他 ---------- */
 
 .empty {

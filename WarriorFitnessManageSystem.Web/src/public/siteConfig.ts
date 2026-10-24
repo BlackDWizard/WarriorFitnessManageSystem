@@ -1,4 +1,6 @@
-export const siteName = 'Warrior Fitness';
+import { siteContent } from './siteContent';
+
+export const siteName = siteContent.brandName;
 
 export interface NavItem {
   to: string;
@@ -29,9 +31,9 @@ export interface SocialLink {
   url: string;
 }
 
-// 暫時寫死，Day 7 改成從 API 讀取（後台設定顯示哪些平台與各自的連結）
-export const socialLinks: SocialLink[] = [
-  { platform: 'facebook', url: 'https://www.facebook.com/' },
-  { platform: 'instagram', url: 'https://www.instagram.com/' },
-  { platform: 'line', url: 'https://line.me/' },
-];
+// 從 siteContent 的社群設定產生，網址是空字串的平台不會出現
+export const socialLinks: SocialLink[] = (
+  Object.entries(siteContent.social) as [SocialPlatform, string][]
+)
+  .filter(([, url]) => url.trim() !== '')
+  .map(([platform, url]) => ({ platform, url }));

@@ -1,0 +1,125 @@
+.intro {
+  max-width: 40em;
+  margin: 0 0 24px;
+  color: var(--wf-iron);
+}
+
+.form {
+  max-width: 720px;
+  display: grid;
+  gap: 24px;
+}
+
+.sectionTitle {
+  margin: 8px 0 -8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--wf-line);
+  font-size: 1.25rem;
+}
+
+.sectionTitle:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* 兩個欄位並排，空間不夠時自動上下排列 */
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-weight: 700;
+}
+
+.required {
+  margin-left: 2px;
+  color: #B42318;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid var(--wf-line);
+  background: #FFFFFF;
+  font: inherit;
+  color: inherit;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--wf-steel);
+  outline: none;
+}
+
+/* 有錯誤的欄位用紅框標示 */
+.field input[aria-invalid],
+.field textarea[aria-invalid] {
+  border-color: #B42318;
+}
+
+.error {
+  margin: 0;
+  color: #B42318;
+  font-size: 0.875rem;
+}
+
+/* 機器人陷阱：移到畫面外面，不用 display: none（有些機器人會跳過 display: none 的欄位） */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.consent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 16px;
+  background: var(--wf-mist);
+  cursor: pointer;
+}
+
+.consent input {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--wf-steel);
+}
+
+.submitError {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 4px solid #B42318;
+  background: #FDECEA;
+  color: #B42318;
+}
+
+.submit {
+  justify-self: start;
+  min-width: 200px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.doneActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}

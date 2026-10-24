@@ -14,14 +14,20 @@ type Props = {
   onUploaded: (image: UploadedImage) => void
   buttonLabel?: string
   // 預覽框的比例，例如活動輪播用 '16 / 9'、教練照片用 '3 / 4'
-  aspectRatio?: string
+  aspectRatio?: string  // 使用的頁面自己會顯示圖片時（例如教練的目前照片），可以關掉內建的預覽框
+  showPreview?: boolean
 }
 
 function formatSize(bytes: number) {
   return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`
 }
 
-export default function ImageUploader({ onUploaded, buttonLabel = '選擇圖片', aspectRatio = '16 / 9' }: Props) {
+export default function ImageUploader({
+  onUploaded,
+  buttonLabel = '選擇圖片',
+  aspectRatio = '16 / 9',
+  showPreview = true, }: Props) {
+
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
@@ -59,11 +65,13 @@ export default function ImageUploader({ onUploaded, buttonLabel = '選擇圖片'
   return (
     <div className={styles.uploader}>
       {/* object-fit: contain 讓整張圖都看得到，比例不對時會看到上下或左右留白 */}
-      <div className={styles.preview} style={{ aspectRatio }}>
-        {preview
-          ? <img src={preview} alt="上傳圖片預覽" className={styles.image} />
-          : <span className={styles.placeholder}>尚未選擇圖片</span>}
-      </div>
+      {showPreview && (
+        <div className={styles.preview} style={{ aspectRatio }}>
+          {preview
+            ? <img src={preview} alt="上傳圖片預覽" className={styles.image} />
+            : <span className={styles.placeholder}>尚未選擇圖片</span>}
+        </div>
+      )}
 
       <div className={styles.actions}>
         {/* 真正的檔案選擇框藏起來，用一般按鈕觸發它，樣式才能統一 */}

@@ -53,6 +53,12 @@
   text-decoration: none;
 }
 
+.logo {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+
 .nav {
   height: 100%;
   display: flex;

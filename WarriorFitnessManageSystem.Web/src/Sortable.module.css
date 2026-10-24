@@ -1,0 +1,37 @@
+.item {
+  position: relative;
+}
+
+/* 拖曳中的那張浮在其他卡片上面，加上陰影看起來像被拿起來 */
+.dragging {
+  z-index: 10;
+}
+
+.dragging :global(.card) {
+  box-shadow: 0 12px 28px rgba(31, 41, 51, 0.25);
+}
+
+/* touch-action: none：手指按在把手上移動時是拖曳，不是捲動頁面 */
+.handle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 44px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-radius);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--a-ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: grab;
+  touch-action: none;
+}
+
+.handle:active {
+  cursor: grabbing;
+}

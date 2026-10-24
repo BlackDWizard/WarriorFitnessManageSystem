@@ -11,6 +11,10 @@ import ChargeForm from './ChargeForm'
 import OrderList from './OrderList'
 import ReportPage from './ReportPage'
 import SiteImageManagerPage from './SiteImageManagerPage'
+import CoachListPage from './CoachListPage'
+import CoachFormPage from './CoachFormPage'
+import BookingListPage from './BookingListPage'
+import BookingDetailPage from './BookingDetailPage'
 
 export default function AdminApp() {
   const session = useSession()
@@ -48,6 +52,11 @@ export default function AdminApp() {
             <Route path="orders" element={<OrderList />} />
             <Route path="reports" element={<ReportPage />} />
             <Route path="content/:slug" element={<SiteImageManagerPage />} />
+            <Route path="coaches" element={<CoachListPage />} />
+            <Route path="coaches/new" element={<CoachFormPage />} />
+            <Route path="coaches/:id/edit" element={<CoachFormPage />} />
+            <Route path="bookings" element={<BookingListPage />} />
+            <Route path="bookings/:id" element={<BookingDetailPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

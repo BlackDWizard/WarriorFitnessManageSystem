@@ -15,6 +15,8 @@ public class AppDbContext : DbContext
     public DbSet<Admin> Admins => Set<Admin>();
     public DbSet<AdminSession> AdminSessions => Set<AdminSession>();
     public DbSet<SiteImage> SiteImages => Set<SiteImage>();
+    public DbSet<Coach> Coaches => Set<Coach>();
+    public DbSet<Booking> Bookings => Set<Booking>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,5 +42,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(s => s.AdminID);
 
         modelBuilder.Entity<SiteImage>().ToTable("siteimages");
+        modelBuilder.Entity<Coach>().ToTable("coaches");
+        modelBuilder.Entity<Booking>().ToTable("bookings");
     }
 }

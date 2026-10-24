@@ -15,8 +15,8 @@ export const siteImageCategories: SiteImageCategoryConfig[] = [
     category: 'Banner',
     slug: 'banners',
     title: '活動輪播',
-    description: '首頁最上方的輪播圖，也會列在「最新活動」頁。請用 1920×1080（16:9）製作，重要的文字不要太靠近邊緣。',
-    aspectRatio: '16 / 9',
+    description: '首頁的活動輪播，也會列在「最新活動」頁。請用正方形（1:1）的圖片，跟 IG 貼文一樣，例如 1080×1080。',
+    aspectRatio: '1 / 1',
     supportsLink: true,
   },
   {

@@ -1,9 +1,18 @@
-/* 輪播載入中的佔位：跟輪播一樣是 16:9，輕微的明暗變化表示正在載入 */
-.bannerSkeleton {
-  max-width: 1440px;
+/* ---------- 活動輪播 ---------- */
+
+.bannerBand {
+  background: var(--wf-steel);
+}
+
+.bannerFrame {
+  max-width: 640px;
   margin: 0 auto;
-  aspect-ratio: 16 / 9;
-  background: var(--wf-mist);
+}
+
+/* 載入中的佔位：跟輪播一樣是正方形，輕微的明暗變化表示正在載入 */
+.bannerSkeleton {
+  aspect-ratio: 1 / 1;
+  background: #2B3640;
   animation: pulse 1.4s ease-in-out infinite;
 }
 
@@ -12,6 +21,9 @@
     opacity: 0.55;
   }
 }
+
+/* ---------- 標語 ---------- */
+
 .intro {
   border-bottom: 1px solid var(--wf-line);
 }
@@ -22,17 +34,18 @@
   padding: 56px 20px;
 }
 
+/* 標語很短，可以放得很大，當作整個首頁的視覺重點 */
 .headline {
   margin: 0;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(2.75rem, 8vw, 5.5rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.1;
   letter-spacing: 0.02em;
 }
 
 .lead {
-  max-width: 32em;
-  margin: 16px 0 0;
+  max-width: 28em;
+  margin: 20px 0 0;
   font-size: 1.125rem;
   color: var(--wf-iron);
 }
@@ -43,6 +56,8 @@
   flex-wrap: wrap;
   gap: 12px;
 }
+
+/* ---------- 學員回饋、環境照片 ---------- */
 
 .testimonials {
   background: var(--wf-mist);

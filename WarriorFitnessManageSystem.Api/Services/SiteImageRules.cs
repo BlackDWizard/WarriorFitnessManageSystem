@@ -12,10 +12,10 @@ public static partial class SiteImageRules
     public static bool IsValidCategory(string? category)
         => category is not null && Categories.Contains(category);
 
-    // 只接受上傳 API 產生的路徑格式：年-月/32 個十六進位字元.副檔名
-    // 防止有人送來 ../ 或別的 bucket 的路徑
+    // 只接受上傳 API 產生的路徑格式，防止有人送來 ../ 或別的 bucket 的路徑
+    // 規則本身搬到 StoragePathRules，教練照片也共用
     public static bool IsValidStoragePath(string? path)
-        => path is not null && StoragePathPattern().IsMatch(path);
+        => StoragePathRules.IsValid(path);
 
     // 連結只接受 http(s) 網址，或 / 開頭的站內路徑（但不能是 // 開頭，那會被當成別的網站）
     // 擋掉 javascript: 這類網址：放進 <a href> 之後，訪客一點就會執行裡面的程式碼

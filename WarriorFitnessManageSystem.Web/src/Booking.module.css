@@ -1,0 +1,40 @@
+/* 左邊欄位名稱、右邊內容；手機上改成上下排列 */
+.details {
+  margin: 0;
+  display: grid;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--a-line);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row dt {
+  color: var(--a-muted);
+}
+
+/* pre-line：保留客人輸入的換行 */
+.row dd {
+  margin: 0;
+  font-weight: 500;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

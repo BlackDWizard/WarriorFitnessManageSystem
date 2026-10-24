@@ -2,10 +2,14 @@ import { Route, Routes } from 'react-router';
 import './theme.css';
 import PublicLayout from './PublicLayout';
 import HomePage from './pages/HomePage';
-import PlaceholderPage from './pages/PlaceholderPage';
+import AboutPage from './pages/AboutPage';
+import FaqPage from './pages/FaqPage';
+import ContactPage from './pages/ContactPage';
+import BookingFormPage from './pages/BookingFormPage';
 import NotFoundPage from './pages/NotFoundPage';
 import EventsPage from './pages/EventsPage';
 import PricingPage from './pages/PricingPage';
+import CoachesPage from './pages/CoachesPage';
 
 export default function PublicApp() {
   return (
@@ -15,11 +19,11 @@ export default function PublicApp() {
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="pricing" element={<PricingPage />} />
-        <Route path="coaches" element={<PlaceholderPage title="教練師資" />} />  {/* Day 6 */}
-        <Route path="about" element={<PlaceholderPage title="關於我們" />} />    {/* Day 7 */}
-        <Route path="faq" element={<PlaceholderPage title="常見問題" />} />      {/* Day 7 */}
-        <Route path="contact" element={<PlaceholderPage title="聯絡我們" />} />  {/* Day 8 */}
-        <Route path="form" element={<PlaceholderPage title="填寫表單" />} />     {/* Day 11 */}
+        <Route path="coaches" element={<CoachesPage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="faq" element={<FaqPage />} />
+        <Route path="contact" element={<ContactPage />} />
+        <Route path="form" element={<BookingFormPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

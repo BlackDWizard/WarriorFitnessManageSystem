@@ -1,9 +1,11 @@
+/* 活動圖是 IG 的正方形圖，用格狀排列，像 IG 的個人頁面 */
 .list {
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
 
 .link {
@@ -13,7 +15,7 @@
 .image {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   background: var(--wf-mist);
 }

@@ -5,6 +5,8 @@ using WarriorFitnessManageSystem.Api.Data.Options;
 using WarriorFitnessManageSystem.Api.Endpoints;
 using WarriorFitnessManageSystem.Api.Services;
 using Microsoft.AspNetCore.Authentication;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,31 @@ builder.Services.AddAuthentication(SessionAuthenticationHandler.SchemeName)
         SessionAuthenticationHandler.SchemeName, null);
 builder.Services.AddAuthorization();
 
+//Render 前面有一層代理伺服器：沒有這段設定，API 看到的 IP 全部都是代理伺服器的 IP，
+//每個客人會被當成同一個人，限制次數就會一起被擋。從 X-Forwarded-For 取得客人真正的 IP
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    // Render 代理伺服器的 IP 不固定，所以不限定來源。API 只能透過 Render 的代理連到，這樣設定是安全的
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+//公開表單的送出次數限制：同一個 IP 每 10 分鐘最多 5 次
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy(BookingEndpoints.PublicFormRateLimitPolicy, http =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0,
+            }));
+});
+
 //Supabase Storage（圖片上傳）
 builder.Services.AddSupabaseStorage(builder.Configuration);
 
@@ -56,6 +83,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+//放在最前面：後面所有 middleware 看到的都是客人真正的 IP
+app.UseForwardedHeaders();
+
 //只在開發環境啟用 Swagger UI（正式環境不開放，避免洩漏 API 結構）
 if (app.Environment.IsDevelopment())
 {
@@ -69,6 +99,8 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseRateLimiter();
+
 app.MapGet("/", () => "Hello World!");
 app.MapAuthEndpoints();
 
@@ -77,8 +109,12 @@ app.MapOrderEndpoints().RequireAuthorization();
 app.MapReportEndpoints().RequireAuthorization();
 app.MapUploadEndpoints().RequireAuthorization();
 app.MapSiteImageEndpoints().RequireAuthorization();
+app.MapCoachEndpoints().RequireAuthorization();
+app.MapBookingEndpoints().RequireAuthorization();
 
 app.MapPaymentEndpoints();
 app.MapPublicSiteImageEndpoints();
+app.MapPublicCoachEndpoints();
+app.MapPublicBookingEndpoints();
 
 app.Run();

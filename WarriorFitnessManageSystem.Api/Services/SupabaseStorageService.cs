@@ -13,12 +13,18 @@ public class SupabaseStorageService
     private readonly HttpClient _http;
     private readonly SupabaseStorageOptions _options;
     private readonly TimeProvider _time;
+    private readonly ILogger<SupabaseStorageService> _logger;
 
-    public SupabaseStorageService(HttpClient http, IOptions<SupabaseStorageOptions> options, TimeProvider time)
+    public SupabaseStorageService(
+        HttpClient http,
+        IOptions<SupabaseStorageOptions> options,
+        TimeProvider time,
+        ILogger<SupabaseStorageService> logger)
     {
         _http = http;
         _options = options.Value;
         _time = time;
+        _logger = logger;
     }
 
     public async Task<UploadedFile> UploadAsync(Stream content, ImageFileType type, CancellationToken ct = default)
@@ -60,6 +66,20 @@ public class SupabaseStorageService
             var detail = await response.Content.ReadAsStringAsync(ct);
             throw new HttpRequestException(
                 $"Supabase Storage 刪除失敗（HTTP {(int)response.StatusCode}）：{detail}");
+        }
+    }
+
+    // 刪除資料之後「順便」清掉檔案用：失敗只記 log，不拋出例外
+    // 資料已經刪了，檔案沒刪掉只是多佔一點空間，不應該讓整個操作失敗
+    public async Task TryDeleteAsync(string path, CancellationToken ct = default)
+    {
+        try
+        {
+            await DeleteAsync(path, ct);
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning(ex, "Storage 檔案 {Path} 刪除失敗", path);
         }
     }
 

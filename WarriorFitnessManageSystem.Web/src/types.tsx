@@ -1,7 +1,6 @@
 export type MemberStatus = 'Active' | 'Expired' | 'Suspended'
 export type OrderStatus = 'Pending' | 'Paid' | 'Failed' | 'Cancelled'
 export type OrderType = 'MembershipRenew' | 'Walkin' | 'Other'
-export type SiteImageCategory = 'Banner' | 'Pricing' | 'Testimonial' | 'Gallery'
 
 export type Member = {
   memberID: string
@@ -62,6 +61,8 @@ export type UploadedImage = {
   url: string
 }
 
+export type SiteImageCategory = 'Banner' | 'Pricing' | 'Testimonial' | 'Gallery'
+
 export type SiteImageItem = {
   id: string
   category: SiteImageCategory
@@ -71,4 +72,49 @@ export type SiteImageItem = {
   linkUrl: string | null
   sortOrder: number
   isVisible: boolean
+}
+
+export type CoachItem = {
+  id: string
+  name: string
+  title: string
+  specialties: string[]
+  bio: string
+  photoPath: string | null
+  photoUrl: string | null
+  sortOrder: number
+  isVisible: boolean
+}
+
+export type BookingListItem = {
+  id: string
+  createdTime: string
+  name: string
+  course: string
+  phone: string
+  contactMethod: string
+  preferredTime: string
+  isHandled: boolean
+}
+
+export type BookingDetail = {
+  id: string
+  createdTime: string
+  source: string
+  course: string
+  goal: string
+  goalOther: string
+  healthNotes: string
+  name: string
+  gender: string
+  birthday: string
+  phone: string
+  email: string
+  lineId: string
+  contactMethod: string
+  preferredTime: string
+  hadCoachBefore: boolean
+  preferredCoach: string
+  helpNotes: string
+  handledTime: string | null
 }

@@ -4,6 +4,7 @@ import { FaBars, FaXmark } from 'react-icons/fa6';
 import { footerNav, mainNav, siteName, socialLinks } from './siteConfig';
 import SocialIcons from './components/SocialIcons';
 import styles from './PublicLayout.module.css';
+import { siteContent } from './siteContent';
 
 // 年份在載入時算一次就好；寫在元件裡面，每次渲染都會重新呼叫 new Date()
 const currentYear = new Date().getFullYear();
@@ -32,7 +33,8 @@ export default function PublicLayout() {
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <Link to="/" className={styles.brand} onClick={closeMenu}>
-            {siteName}
+            {/* 有 LOGO 就顯示圖片（alt 是品牌名稱），沒有就顯示文字 */}
+            {siteContent.logoSrc ? <img src={siteContent.logoSrc} alt={siteName} className={styles.logo} /> : siteName}
           </Link>
 
           <button

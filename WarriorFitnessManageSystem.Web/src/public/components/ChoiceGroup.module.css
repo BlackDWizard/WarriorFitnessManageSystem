@@ -1,0 +1,67 @@
+.group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.required {
+  margin-left: 2px;
+  color: #B42318;
+}
+
+.hint {
+  margin-left: 4px;
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--wf-iron);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 選項做成大顆的按鈕樣式，手機上好點；選到的那個變成黃底 */
+.option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--wf-line);
+  background: #FFFFFF;
+  cursor: pointer;
+}
+
+/* 原生的圓點／勾勾藏起來（但還在，鍵盤和螢幕報讀器照樣能用） */
+.option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.option:has(input:checked) {
+  border-color: var(--wf-steel);
+  background: var(--wf-plate);
+  font-weight: 700;
+}
+
+.option:has(input:focus-visible) {
+  outline: 3px solid var(--wf-steel);
+  outline-offset: 2px;
+}
+
+.error {
+  margin: 8px 0 0;
+  color: #B42318;
+  font-size: 0.875rem;
+}

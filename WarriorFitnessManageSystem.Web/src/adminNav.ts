@@ -17,6 +17,7 @@ export const adminNav: AdminNavGroup[] = [
     title: '會員管理',
     items: [
       { to: '/', label: '會員列表', matchPrefixes: ['/members'] },
+      { to: '/bookings', label: '體驗預約' },
       { to: '/charge', label: '現場收款' },
       { to: '/orders', label: '訂單紀錄' },
       { to: '/reports', label: '營收報表' },
@@ -26,7 +27,10 @@ export const adminNav: AdminNavGroup[] = [
   {
     title: '網站內容',
     // 四種網站圖片的選單直接從分類設定產生，新增分類時選單會自動多一項
-    items: siteImageCategories.map(c => ({ to: `/content/${c.slug}`, label: c.title })),
+    items: [
+      ...siteImageCategories.map(c => ({ to: `/content/${c.slug}`, label: c.title })),
+      { to: '/coaches', label: '教練師資' },
+    ],
   },
 ]
 

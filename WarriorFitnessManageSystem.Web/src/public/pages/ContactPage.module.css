@@ -1,0 +1,95 @@
+/* 桌機：左邊聯絡資訊、右邊地圖；手機：上下排列 */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.info {
+  display: grid;
+  gap: 28px;
+}
+
+.block {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--wf-iron);
+}
+
+.value {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--wf-steel);
+  text-decoration: none;
+}
+
+.link {
+  color: var(--wf-steel);
+  font-size: 0.9rem;
+}
+
+.hours {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.hoursRow {
+  display: flex;
+  gap: 16px;
+}
+
+.hoursRow dt {
+  min-width: 6em;
+  font-weight: 500;
+}
+
+.hoursRow dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.social {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 8px;
+}
+
+.socialLink {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--wf-steel);
+  color: var(--wf-steel);
+}
+
+.socialLink:hover {
+  background: var(--wf-steel);
+  color: var(--wf-chalk);
+}
+
+.map {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 0;
+  background: var(--wf-mist);
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

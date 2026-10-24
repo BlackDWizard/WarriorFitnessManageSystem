@@ -1,0 +1,98 @@
+.list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 32px;
+}
+
+/* 桌機：左邊照片、右邊文字；手機：上下排列 */
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--wf-line);
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--wf-steel);
+}
+
+.photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.initial {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--wf-plate);
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+.body {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.2;
+}
+
+/* 職稱用黃色底線標示，跟頁面標題的風格一致 */
+.title {
+  justify-self: start;
+  margin: -4px 0 0;
+  padding-bottom: 4px;
+  border-bottom: 3px solid var(--wf-plate);
+  font-weight: 500;
+  color: var(--wf-iron);
+}
+
+.tags {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 2px 12px;
+  border: 1px solid var(--wf-steel);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.bio {
+  margin: 0;
+  max-width: 40em;
+  white-space: pre-line;
+  color: var(--wf-steel);
+}
+
+@media (max-width: 640px) {
+  .card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .photo {
+    max-width: 320px;
+  }
+}
