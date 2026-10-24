@@ -39,3 +39,24 @@
   font-weight: 500;
   color: var(--a-muted);
 }
+
+.passkeyButton {
+  min-height: 48px;
+}
+
+/* 「或使用帳號密碼」兩側的分隔線 */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--a-muted);
+  font-size: 0.85rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--a-line);
+}

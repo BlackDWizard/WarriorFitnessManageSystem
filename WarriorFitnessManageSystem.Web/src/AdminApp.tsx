@@ -15,6 +15,7 @@ import CoachListPage from './CoachListPage'
 import CoachFormPage from './CoachFormPage'
 import BookingListPage from './BookingListPage'
 import BookingDetailPage from './BookingDetailPage'
+import AccountPage from './AccountPage'
 
 export default function AdminApp() {
   const session = useSession()
@@ -57,6 +58,7 @@ export default function AdminApp() {
             <Route path="coaches/:id/edit" element={<CoachFormPage />} />
             <Route path="bookings" element={<BookingListPage />} />
             <Route path="bookings/:id" element={<BookingDetailPage />} />
+            <Route path="account" element={<AccountPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

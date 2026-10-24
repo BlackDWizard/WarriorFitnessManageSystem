@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WarriorFitnessManageSystem.Api.Data.Entities;
 
 namespace WarriorFitnessManageSystem.Api.Data;
@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<SiteImage> SiteImages => Set<SiteImage>();
     public DbSet<Coach> Coaches => Set<Coach>();
     public DbSet<Booking> Bookings => Set<Booking>();
+    public DbSet<AdminPasskey> AdminPasskeys => Set<AdminPasskey>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,13 +28,17 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<PaymentRecord>().ToTable("paymentrecords");
 
         modelBuilder.Entity<Admin>().ToTable("admins");
+        modelBuilder.Entity<AdminSession>().ToTable("adminsessions");
+        modelBuilder.Entity<SiteImage>().ToTable("siteimages");
+        modelBuilder.Entity<Coach>().ToTable("coaches");
+        modelBuilder.Entity<Booking>().ToTable("bookings");
+        modelBuilder.Entity<AdminPasskey>().ToTable("adminpasskeys");
 
-        //明確告訴 EF Core 這個欄位是 jsonb 型別
-        modelBuilder.Entity<PaymentRecord>()
-            .Property(p => p.PaymentRecordGatewayRawPayload)
-            .HasColumnType("jsonb");
-
-            modelBuilder.Entity<AdminSession>().ToTable("adminsessions");
+        //一個管理員可以綁定多台裝置
+        modelBuilder.Entity<AdminPasskey>()
+            .HasOne(p => p.Admin)
+            .WithMany()
+            .HasForeignKey(p => p.AdminID);
 
         //一個管理員可以有多筆 Session（多台裝置、歷次登入）
         modelBuilder.Entity<AdminSession>()
@@ -41,8 +46,10 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(s => s.AdminID);
 
-        modelBuilder.Entity<SiteImage>().ToTable("siteimages");
-        modelBuilder.Entity<Coach>().ToTable("coaches");
-        modelBuilder.Entity<Booking>().ToTable("bookings");
+        //明確告訴 EF Core 這個欄位是 jsonb 型別
+        modelBuilder.Entity<PaymentRecord>()
+            .Property(p => p.PaymentRecordGatewayRawPayload)
+            .HasColumnType("jsonb");
+
     }
 }

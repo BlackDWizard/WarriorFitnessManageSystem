@@ -118,3 +118,10 @@ export type BookingDetail = {
   helpNotes: string
   handledTime: string | null
 }
+
+export type PasskeyItem = {
+  id: string
+  deviceName: string
+  createdTime: string
+  lastUsedTime: string | null
+}

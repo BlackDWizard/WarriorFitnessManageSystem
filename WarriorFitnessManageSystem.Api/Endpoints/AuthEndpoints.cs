@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WarriorFitnessManageSystem.Api.Data;
 using WarriorFitnessManageSystem.Api.Data.Dtos;
@@ -94,7 +94,8 @@ public static class AuthEndpoints
         });
     }
 
-    private static CookieOptions CreateCookieOptions(IHostEnvironment env) => new()
+    // internal：指紋登入（PasskeyEndpoints）也用同一組 cookie 設定
+    internal static CookieOptions CreateCookieOptions(IHostEnvironment env) => new()
     {
         HttpOnly = true,                  // JavaScript 讀不到，XSS 偷不走
         Secure = !env.IsDevelopment(),    // 正式環境只走 HTTPS；本機是 http 所以關掉
@@ -103,7 +104,7 @@ public static class AuthEndpoints
         // 不設 Expires：關掉瀏覽器 cookie 就消失。逾時與否一律由伺服器判斷
     };
 
-    private static SessionInfo ToSessionInfo(AdminSession session, AdminSessionService sessions) => new(
+    internal static SessionInfo ToSessionInfo(AdminSession session, AdminSessionService sessions) => new(
         session.Admin.AdminUsername,
         session.Admin.AdminDisplayName ?? session.Admin.AdminUsername,
         sessions.GetExpiresInSeconds(session));

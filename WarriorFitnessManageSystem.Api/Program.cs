@@ -1,12 +1,13 @@
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authentication;
+using Fido2NetLib;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WarriorFitnessManageSystem.Api.Data;
 using WarriorFitnessManageSystem.Api.Data.Options;
 using WarriorFitnessManageSystem.Api.Endpoints;
 using WarriorFitnessManageSystem.Api.Services;
-using Microsoft.AspNetCore.Authentication;
-using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,6 @@ builder.Services.AddScoped(sp =>
 });
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection("App"));
 
-//Auth 設定
 //Auth 設定
 builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
 builder.Services.AddSingleton(TimeProvider.System);
@@ -52,6 +52,16 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    //指紋登入：同一個 IP 每 10 分鐘最多 20 次
+    options.AddPolicy(PasskeyEndpoints.LoginRateLimitPolicy, http =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0,
+            }));
     options.AddPolicy(BookingEndpoints.PublicFormRateLimitPolicy, http =>
         RateLimitPartition.GetFixedWindowLimiter(
             http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
@@ -62,6 +72,20 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0,
             }));
 });
+
+//指紋登入（Passkey）：沒有設定 Passkey:RpId 和 Passkey:Origins 時整個功能不啟用，密碼登入完全不受影響
+var passkeyOptions = builder.Configuration.GetSection("Passkey").Get<PasskeyOptions>() ?? new PasskeyOptions();
+if (passkeyOptions.IsConfigured)
+{
+    builder.Services.AddSingleton<IFido2>(new Fido2(new Fido2Configuration
+    {
+        ServerDomain = passkeyOptions.RpId,
+        ServerName = "Warrior Fitness 管理後台",
+        Origins = new HashSet<string>(passkeyOptions.Origins),
+    }));
+}
+//指紋登入的挑戰碼暫存在記憶體（5 分鐘）
+builder.Services.AddMemoryCache();
 
 //Supabase Storage（圖片上傳）
 builder.Services.AddSupabaseStorage(builder.Configuration);
@@ -98,11 +122,14 @@ app.UseCors();
 //驗證 middleware（順序很重要，一定要在 MapXxxEndpoints 之前）
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseRateLimiter();
 
 app.MapGet("/", () => "Hello World!");
 app.MapAuthEndpoints();
+if (passkeyOptions.IsConfigured)
+{
+    app.MapPasskeyEndpoints();
+}
 
 app.MapMemberEndpoints().RequireAuthorization();
 app.MapOrderEndpoints().RequireAuthorization();
@@ -113,6 +140,8 @@ app.MapCoachEndpoints().RequireAuthorization();
 app.MapBookingEndpoints().RequireAuthorization();
 
 app.MapPaymentEndpoints();
+
+//前台用的公開 API，不需要登入
 app.MapPublicSiteImageEndpoints();
 app.MapPublicCoachEndpoints();
 app.MapPublicBookingEndpoints();

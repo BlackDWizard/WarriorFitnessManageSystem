@@ -23,7 +23,6 @@ export const adminNav: AdminNavGroup[] = [
       { to: '/reports', label: '營收報表' },
     ],
   },
-  // Day 3 起在這裡加上「網站內容」群組：活動圖片、課程費用、教練師資……
   {
     title: '網站內容',
     // 四種網站圖片的選單直接從分類設定產生，新增分類時選單會自動多一項
@@ -31,6 +30,10 @@ export const adminNav: AdminNavGroup[] = [
       ...siteImageCategories.map(c => ({ to: `/content/${c.slug}`, label: c.title })),
       { to: '/coaches', label: '教練師資' },
     ],
+  },
+  {
+    title: '帳號',
+    items: [{ to: '/account', label: '指紋登入' }],
   },
 ]
 
