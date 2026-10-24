@@ -110,6 +110,21 @@ var app = builder.Build();
 //放在最前面：後面所有 middleware 看到的都是客人真正的 IP
 app.UseForwardedHeaders();
 
+//API 回應的安全標頭：大部分回傳 JSON，但付款頁是 HTML，一起加上
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    await next();
+});
+
+//告訴瀏覽器這個網域一律用 HTTPS（本機是 http，所以開發環境不加）
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
 //只在開發環境啟用 Swagger UI（正式環境不開放，避免洩漏 API 結構）
 if (app.Environment.IsDevelopment())
 {

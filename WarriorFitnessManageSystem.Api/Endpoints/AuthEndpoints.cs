@@ -35,7 +35,7 @@ public static class AuthEndpoints
             http.Response.Cookies.Append(authOptions.Value.CookieName, token, CreateCookieOptions(env));
 
             return Results.Ok(ToSessionInfo(session, sessions));
-        });
+        }).RequireRateLimiting(PasskeyEndpoints.LoginRateLimitPolicy);
 
         // 不要求登入：Session 已經過期的人按登出也要能清掉 cookie
         group.MapPost("/logout", async (
